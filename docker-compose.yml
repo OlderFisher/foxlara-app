@@ -1,0 +1,58 @@
+###############################################################################
+#                          Generated on phpdocker.io                          #
+###############################################################################
+version: '3.1'
+services:
+    mysql:
+        image: 'mysql:8.0'
+        working_dir: /foxlara-app
+        volumes:
+            - '.:/foxlara-app'
+        environment:
+            - MYSQL_ROOT_PASSWORD=password
+            - MYSQL_DATABASE=foxlara_app
+            - MYSQL_USER=root
+            - MYSQL_PASSWORD=password
+        ports:
+            - '4002:3306'
+
+    mariadb:
+        image: 'mariadb:11.0'
+        working_dir: /foxlara-app
+        volumes:
+            - '.:/foxlara-app'
+        environment:
+            - MYSQL_ROOT_PASSWORD=password
+            - MYSQL_DATABASE=foxlara_app_mdb
+            - MYSQL_USER=root
+            - MYSQL_PASSWORD=password
+        ports:
+            - '4003:3306'
+
+    postgres:
+        image: 'postgres:15-alpine'
+        working_dir: /foxlara-app
+        volumes:
+            - '.:/foxlara-app'
+        environment:
+            - POSTGRES_USER=root
+            - POSTGRES_PASSWORD=password
+            - POSTGRES_DB=foxlara_app_post
+        ports:
+            - '4004:5432'
+
+    webserver:
+        image: 'nginx:alpine'
+        working_dir: /foxlara-app
+        volumes:
+            - '.:/foxlara-app'
+            - './phpdocker/nginx/nginx.conf:/etc/nginx/conf.d/default.conf'
+        ports:
+            - '4000:80'
+
+    php-fpm:
+        build: phpdocker/php-fpm
+        working_dir: /foxlara-app
+        volumes:
+            - '.:/foxlara-app'
+            - './phpdocker/php-fpm/php-ini-overrides.ini:/etc/php/8.2/fpm/conf.d/99-overrides.ini'
