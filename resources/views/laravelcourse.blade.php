@@ -17,7 +17,9 @@
 </head>
 <body class="antialiased">
     <header class="text-left p-6">
-        <img src="{{ asset('foxmindedlogo.png') }}" width="150" height="auto" alt="foxminded logo">
+        <a href="/">
+            <img src="{{ asset('foxmindedlogo.png') }}" width="150" height="auto" alt="foxminded logo">
+        </a>
     </header>
     <hr/>
     <div id="main" class="container">
@@ -38,8 +40,15 @@
                    </svg>
                </a>
            </p>
-           <p>To see list of drivers name and code click here >>>. Add list order view  by ../drivers/?order=asc|desc</p>
-           <p>To see info about the driver add to drivers link ../drivers/?driver_id=SVF</p>
+           <p class="flex">Common Pilots statistics.
+               <a href="/drivers" class="">
+                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" class="self-center shrink-0 stroke-red-500 w-6 h-6 mx-6">
+                       <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75" />
+                   </svg>
+               </a>
+               <span><i>Add list order view  by <span style="color:blue">../drivers/?order=asc|desc</span>. </i></span>
+               <span><i>To see single driver info add to link.  <span style="color:blue">../drivers/?driver_id=SVF</span></i></span>
+           </p>
        </div>
 
     </div>
