@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DriverController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ReportController;
 
@@ -18,4 +19,5 @@ Route::get('/', function () {
     return view('laravelcourse');
 });
 Route::get('/report', [ReportController::class, 'index']);
+Route::get('/drivers', [DriverController::class, 'index']);
 

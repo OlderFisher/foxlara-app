@@ -10,13 +10,15 @@ namespace App\Models;
 class MonacoReport
 {
     private array $monacoRaceData = [];
-    private const FOLDER_PATH = 'reportfiles';
     public const STARTS_FILE = 'start.log';
     public const ENDS_FILE = 'end.log';
     public const ABRREVIATIONS_FILE = 'abbreviations.txt';
 
+    public string $folderPath;
+
     public function __construct()
     {
+        $this->folderPath = storage_path('monacoreports');
         $this->setRaceStartData();
         $this->setRaceEndData();
         $this->setPilotData();
@@ -28,7 +30,7 @@ class MonacoReport
      */
     private function setRaceStartData(): void
     {
-        $startsFileContent = file_get_contents(self::FOLDER_PATH . '/' . self::STARTS_FILE);
+        $startsFileContent = file_get_contents($this->folderPath . '/' . self::STARTS_FILE);
         $starts = explode("\n", $startsFileContent);
         foreach ($starts as $start) {
             if (trim($start) && strlen($start) > 3) {
@@ -48,7 +50,7 @@ class MonacoReport
      */
     private function setRaceEndData(): void
     {
-        $endsFileContent = file_get_contents(self::FOLDER_PATH . '/' . self::ENDS_FILE);
+        $endsFileContent = file_get_contents($this->folderPath. '/' . self::ENDS_FILE);
         $ends = explode("\n", $endsFileContent);
         foreach ($ends as $end) {
             if (trim($end)) {
@@ -68,7 +70,7 @@ class MonacoReport
      */
     private function setPilotData(): void
     {
-        $abbreviationsFileContent = file_get_contents(self::FOLDER_PATH . '/' . self::ABRREVIATIONS_FILE);
+        $abbreviationsFileContent = file_get_contents($this->folderPath . '/' . self::ABRREVIATIONS_FILE);
         $abbreviations = explode("\n", $abbreviationsFileContent);
         foreach ($abbreviations as $single) {
             if (trim($single)) {
@@ -90,9 +92,9 @@ class MonacoReport
      * @param int $order
      * @return array
      */
-    public function buildRaceReport(int $order = SORT_ASC): array
+    public function buildRaceReport(string $on, int $order = SORT_ASC): array
     {
-        $sortedData = $this->raceResultsSort('race_time', $order);
+        $sortedData = $this->raceResultsSort($on, $order);
         $reportData = array_map(function ($item) {
             $returnedItem = [];
             $returnedItem['pilot_name'] = $item['pilot_name'];
@@ -162,11 +164,11 @@ class MonacoReport
     private function raceResultsSort(string $on, int $order = SORT_ASC): array
     {
         $arrayToSort = $this->monacoRaceData;
-        uasort($arrayToSort, function ($a, $b) use ($order) {
+        uasort($arrayToSort, function ($a, $b) use ($on, $order) {
             if ($order === SORT_ASC) {
-                return ($a['race_time'] <=> $b['race_time']);
+                return ($a[$on] <=> $b[$on]);
             } else {
-                return ($b['race_time'] <=> $a['race_time']);
+                return ($b[$on] <=> $a[$on]);
             }
         });
         return $arrayToSort;

@@ -8,7 +8,7 @@ RUN apt-get update \
         php8.2-mysql \ 
         php8.2-odbc \ 
         php8.2-pgsql \ 
-        php8.2-psr \ 
+        php8.2-raphf \
         php8.2-redis \ 
         php8.2-soap \ 
         php8.2-sqlite3 \ 
