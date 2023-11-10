@@ -5,26 +5,35 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use App\Models\MonacoReport;
 use Illuminate\Http\Request;
-//use Spatie\ArrayToXml\ArrayToXml;
 use Mtownsend\ResponseXml\Providers\ResponseXmlServiceProvider;
+use Symfony\Component\HttpFoundation\Response;
 
 class ReportController extends Controller
 {
-    public function index(Request $request): string|null
+    /**
+     * @OA\Get(
+     *     path="/api/v1/report",
+     *     summary="Get Monaco Race report data",
+     *     @OA\Parameter(
+     *         name="format",
+     *         in="query",
+     *         description="Response data format json | xml",
+     *         required=false,
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Response(response="200|201", description="Monaco Race Reposrt data"),
+     * )
+     */
+    public function index(Request $request): Response
     {
         $monacoRace = new MonacoReport();
         $raceReport = $monacoRace->buildRaceReport('pilot_name');
 
-        $format = $request->filled(['format']) ?  $request->only(['format']) : null;
-
-        if (!$format || $format['format'] === 'json') {
-            return json_encode(response()->json($raceReport, 200, [],0));
-        }
-        if ($format['format'] === 'xml') {
-//            $xml = ArrayToXml::convert($raceReport);
+        $format = $request->get('format');
+        if ($format === 'xml') {
             return response()->xml($raceReport);
         }
-        return null;
+        return response()->json($raceReport, 200, [],0);
     }
 
 }

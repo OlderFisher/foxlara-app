@@ -5,10 +5,11 @@ namespace Tests\Unit;
 use App\Models\MonacoReport;
 use Tests\TestCase;
 
+
 class ApiReportTest extends TestCase
 {
     /**
-     * A basic unit test example.
+     * Test monaco report API.
      */
     public function testApiReportJson(): void
     {
