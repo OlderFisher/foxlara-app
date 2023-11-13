@@ -30,7 +30,7 @@ class ReportController extends Controller
      *         required=false,
      *         @OA\Schema(type="string")
      *     ),
-     *     @OA\Response(response="200|201", description="Monaco Race Report data"),
+     *     @OA\Response(response="200", description="Monaco Race Report data"),
      * )
      */
     public function index(Request $request): Response

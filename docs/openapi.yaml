@@ -18,5 +18,5 @@ paths:
           schema:
             type: string
       responses:
-        200|201:
+        200:
           description: 'Monaco Race Report data'
