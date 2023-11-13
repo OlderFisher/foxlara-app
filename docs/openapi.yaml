@@ -1,0 +1,22 @@
+openapi: 3.0.0
+info:
+  title: 'Mmonaco Race results basic API'
+  contact:
+    email: lilik.aleksandr@gmail.com
+  version: 1.0.0
+paths:
+  /api/v1/report:
+    get:
+      summary: 'Get Monaco Race report data'
+      operationId: c5b86806477f1b5c012de226552651e6
+      parameters:
+        -
+          name: format
+          in: query
+          description: 'Response data format json | xml'
+          required: false
+          schema:
+            type: string
+      responses:
+        200|201:
+          description: 'Monaco Race Report data'

@@ -5,9 +5,18 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use App\Models\MonacoReport;
 use Illuminate\Http\Request;
-use Mtownsend\ResponseXml\Providers\ResponseXmlServiceProvider;
+use OpenApi\Annotations as OA;
 use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * @OA\Info(
+ *   title="Mmonaco Race results basic API",
+ *   version="1.0.0",
+ *   @OA\Contact(
+ *     email="lilik.aleksandr@gmail.com"
+ *   )
+ * )
+ */
 class ReportController extends Controller
 {
     /**
@@ -21,7 +30,7 @@ class ReportController extends Controller
      *         required=false,
      *         @OA\Schema(type="string")
      *     ),
-     *     @OA\Response(response="200|201", description="Monaco Race Reposrt data"),
+     *     @OA\Response(response="200|201", description="Monaco Race Report data"),
      * )
      */
     public function index(Request $request): Response
