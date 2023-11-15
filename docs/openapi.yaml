@@ -21,15 +21,16 @@ paths:
         '200':
           description: 'Monaco Race Report successful json|xml data return'
           content:
-            application/json: {  }
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  $ref: '#/components/schemas/Report'
             application/xml: {  }
 components:
   schemas:
     Report:
       properties:
-        abbreviation_key:
-          type: string
-          example: MSF
         pilot_name:
           type: string
           example: 'Michael Shumacher'

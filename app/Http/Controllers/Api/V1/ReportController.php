@@ -35,6 +35,12 @@ class ReportController extends Controller
      *      description="Monaco Race Report successful json|xml data return",
      *      @OA\MediaType(
      *          mediaType="application/json",
+     *          @OA\Schema(
+     *              type="object",
+     *              @OA\AdditionalProperties(
+     *                  ref="#/components/schemas/Report"
+     *              ),
+     *          )
      *      ),
      *      @OA\MediaType(
      *           mediaType="application/xml",
@@ -45,12 +51,6 @@ class ReportController extends Controller
      * @OA\Schema(
      *      schema="Report",
      *      type="object",
-     *
-     *     @OA\Property(
-     *         property="abbreviation_key",
-     *         type="string",
-     *         example="MSF"
-     *       ),
      *
      *      @OA\Property(
      *        property="pilot_name",
