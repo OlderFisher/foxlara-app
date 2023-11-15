@@ -17,5 +17,6 @@ RUN apt-get update \
         php8.2-sybase \ 
         php8.2-xdebug \ 
         php8.2-yaml \
+     php8.2-xdebug \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
