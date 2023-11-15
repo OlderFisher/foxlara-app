@@ -30,8 +30,46 @@ class ReportController extends Controller
      *         required=false,
      *         @OA\Schema(type="string")
      *     ),
-     *     @OA\Response(response="200", description="Monaco Race Report data"),
+     *     @OA\Response(
+     *      response="200",
+     *      description="Monaco Race Report successful json|xml data return",
+     *      @OA\MediaType(
+     *          mediaType="application/json",
+     *      ),
+     *      @OA\MediaType(
+     *           mediaType="application/xml",
+     *       ),
+     *
+     *     ),
      * )
+     * @OA\Schema(
+     *      schema="Report",
+     *      type="object",
+     *
+     *     @OA\Property(
+     *         property="abbreviation_key",
+     *         type="string",
+     *         example="MSF"
+     *       ),
+     *
+     *      @OA\Property(
+     *        property="pilot_name",
+     *        type="string",
+     *        example="Michael Shumacher"
+     *      ),
+     *
+     *      @OA\Property(
+     *        property="pilot_team",
+     *        type="string",
+     *        example="Ferrari"
+     *      ),
+     *
+     *        @OA\Property(
+     *          property="race_time",
+     *          type="string",
+     *          format="date-time"
+     *        ),
+     *    )
      */
     public function index(Request $request): Response
     {

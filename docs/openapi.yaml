@@ -18,5 +18,25 @@ paths:
           schema:
             type: string
       responses:
-        200:
-          description: 'Monaco Race Report data'
+        '200':
+          description: 'Monaco Race Report successful json|xml data return'
+          content:
+            application/json: {  }
+            application/xml: {  }
+components:
+  schemas:
+    Report:
+      properties:
+        abbreviation_key:
+          type: string
+          example: MSF
+        pilot_name:
+          type: string
+          example: 'Michael Shumacher'
+        pilot_team:
+          type: string
+          example: Ferrari
+        race_time:
+          type: string
+          format: date-time
+      type: object
