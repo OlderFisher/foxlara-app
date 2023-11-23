@@ -12,7 +12,7 @@ services:
         environment:
             - POSTGRES_USER=root
             - POSTGRES_PASSWORD=password
-            - POSTGRES_DB=postgres
+            - POSTGRES_DB=foxlara
         ports:
             - '5004:5432'
 

@@ -2,20 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\MonacoReport;
+use App\Models\ReportDb;
 use Illuminate\View\View;
 
-class ReportController extends Controller
+class ReportDbController extends Controller
 {
     public function index(): View
     {
-        $monacoRace = new MonacoReport();
-        $raceReport = $monacoRace->buildRaceReport('race_time', SORT_ASC);
+        $raceReport = ReportDb::Report();
 
-        return view('reports.report', [
+        return view('reports.dbreport', [
             'reportData' => $raceReport,
             'topPilots' => array_slice($raceReport, 0, 15),
             'slowPilots' => array_slice($raceReport, 15, count($raceReport))
         ]);
     }
+
 }

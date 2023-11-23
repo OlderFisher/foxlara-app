@@ -2,7 +2,8 @@
 
 namespace Database\Seeders;
 
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\MonacoReport;
+use App\Models\Races;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -12,11 +13,13 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // \App\Models\User::factory(10)->create();
+        Races::factory()->create();
 
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
+        $monacoRace = new MonacoReport();
+        $raceReport = $monacoRace->buildRaceReport('pilot_team');
+
+        $this->callWith(TeamsSeeder::class, ['raceReport' => $raceReport]);
+        $this->callWith(PilotsSeeder::class, ['raceReport' => $raceReport]);
+        $this->callWith(ResultsSeeder::class, ['raceReport' => $raceReport]);
     }
 }

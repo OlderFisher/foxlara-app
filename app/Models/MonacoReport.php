@@ -30,7 +30,7 @@ class MonacoReport
      */
     private function setRaceStartData(): void
     {
-        $startsFileContent = file_get_contents($this->folderPath . '/' . self::STARTS_FILE);
+        $startsFileContent = file_get_contents($this->folderPath.'/'.self::STARTS_FILE);
         $starts = explode("\n", $startsFileContent);
         foreach ($starts as $start) {
             if (trim($start) && strlen($start) > 3) {
@@ -50,7 +50,7 @@ class MonacoReport
      */
     private function setRaceEndData(): void
     {
-        $endsFileContent = file_get_contents($this->folderPath. '/' . self::ENDS_FILE);
+        $endsFileContent = file_get_contents($this->folderPath.'/'.self::ENDS_FILE);
         $ends = explode("\n", $endsFileContent);
         foreach ($ends as $end) {
             if (trim($end)) {
@@ -60,7 +60,7 @@ class MonacoReport
                 $dateTimeString = str_replace('_', ' ', $stringWithoutDriver);
 
                 $this->monacoRaceData[$driver]['end_time'] = strtotime($dateTimeString);
-                  }
+            }
         }
     }
 
@@ -70,7 +70,7 @@ class MonacoReport
      */
     private function setPilotData(): void
     {
-        $abbreviationsFileContent = file_get_contents($this->folderPath . '/' . self::ABRREVIATIONS_FILE);
+        $abbreviationsFileContent = file_get_contents($this->folderPath.'/'.self::ABRREVIATIONS_FILE);
         $abbreviations = explode("\n", $abbreviationsFileContent);
         foreach ($abbreviations as $single) {
             if (trim($single)) {
@@ -89,7 +89,7 @@ class MonacoReport
 
     /**
      * Function to fill race report in sort order
-     * @param int $order
+     * @param  int  $order
      * @return array
      */
     public function buildRaceReport(string $on, int $order = SORT_ASC): array
@@ -98,6 +98,8 @@ class MonacoReport
         $reportData = array_map(function ($item) {
             $returnedItem = [];
             $returnedItem['pilot_name'] = $item['pilot_name'];
+            $returnedItem['start_time'] = $item['start_time'];
+            $returnedItem['end_time'] = $item['end_time'];
             $returnedItem['pilot_team'] = $item['pilot_team'];
             $returnedItem['race_time'] = date('G:i:s.ms', $item['race_time']);
             return $returnedItem;
@@ -108,7 +110,7 @@ class MonacoReport
 
     /**
      * Function to output race report table in HTML format
-     * @param array $raceReport
+     * @param  array  $raceReport
      * @return string
      */
     public function printRaceReportToHTML(array $raceReport): string
@@ -131,10 +133,10 @@ class MonacoReport
         $index = 1;
         foreach ($topPilots as $key => $value) {
             $outputHtml .= '<tr>';
-            $outputHtml .= '<td style="padding: 10px 15px">' . $index . '</td>';
-            $outputHtml .= '<td style="padding: 10px 15px">' . $value['pilot_name'] . '</td>';
-            $outputHtml .= '<td style="padding: 10px 15px">' . $value['pilot_team'] . '</td>';
-            $outputHtml .= '<td style="padding: 10px 15px">' . $value['race_time'] . '</td>';
+            $outputHtml .= '<td style="padding: 10px 15px">'.$index.'</td>';
+            $outputHtml .= '<td style="padding: 10px 15px">'.$value['pilot_name'].'</td>';
+            $outputHtml .= '<td style="padding: 10px 15px">'.$value['pilot_team'].'</td>';
+            $outputHtml .= '<td style="padding: 10px 15px">'.$value['race_time'].'</td>';
             $outputHtml .= '</tr>';
             $index++;
         }
@@ -143,10 +145,10 @@ class MonacoReport
         // Slow pilots mapping
         foreach ($slowPilots as $key => $value) {
             $outputHtml .= '<tr>';
-            $outputHtml .= '<td style="padding: 10px 15px">' . $index . '</td>';
-            $outputHtml .= '<td style="padding: 10px 15px">' . $value['pilot_name'] . '</td>';
-            $outputHtml .= '<td style="padding: 10px 15px">' . $value['pilot_team'] . '</td>';
-            $outputHtml .= '<td style="padding: 10px 15px">' . $value['race_time'] . '</td>';
+            $outputHtml .= '<td style="padding: 10px 15px">'.$index.'</td>';
+            $outputHtml .= '<td style="padding: 10px 15px">'.$value['pilot_name'].'</td>';
+            $outputHtml .= '<td style="padding: 10px 15px">'.$value['pilot_team'].'</td>';
+            $outputHtml .= '<td style="padding: 10px 15px">'.$value['race_time'].'</td>';
             $outputHtml .= '</tr>';
             $index++;
         }
@@ -157,8 +159,8 @@ class MonacoReport
 
     /**
      * Function to sort Race results array by a specific key
-     * @param string $on
-     * @param int $order
+     * @param  string  $on
+     * @param  int  $order
      * @return array
      */
     private function raceResultsSort(string $on, int $order = SORT_ASC): array
