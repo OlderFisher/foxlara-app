@@ -24,7 +24,7 @@
     <div class="p-4 lg:p-8">
         <div class="text-left">
             <div>
-                <h2 class="font-semibold text-xl">MONACO RACE PILOTS DATA REPORT</h2>
+                <h2 class="font-semibold text-xl">MONACO RACE DATABASE DATA REPORT</h2>
             </div>
         </div>
     </div>
@@ -39,10 +39,10 @@
             </tr>
             </thead>
             <tbody>
-            {{--   Pilots mapping--}}
+            {{--   Top race pilots mapping--}}
             <?php
             $index = 1 ?>
-            @foreach ($reportData as $key => $value)
+            @foreach ($topPilots as $key => $value)
                 <tr>
                     <td style="padding: 10px 15px">{{ $index }}</td>
                     <td style="padding: 10px 15px">{{ $value['pilot_name'] }} &nbsp ({{ $key }})</td>
@@ -52,7 +52,21 @@
                     <?php
                     $index++; ?>
             @endforeach
+            <tr>
+                <td style="padding: 10px 15px; border-bottom:1px dashed black" colspan="4"></td>
+            </tr>
 
+            {{--   Slow pilots mapping--}}
+            @foreach ($slowPilots as $key => $value)
+                <tr>
+                    <td style="padding: 10px 15px">{{ $index }}</td>
+                    <td style="padding: 10px 15px">{{ $value['pilot_name'] }} &nbsp ({{ $key }})</td>
+                    <td style="padding: 10px 15px">{{ $value['pilot_team'] }} </td>
+                    <td style="padding: 10px 15px">{{ $value['race_time']  }} </td>
+                </tr>
+                    <?php
+                    $index++; ?>
+            @endforeach
             </tbody>
         </table>
 
@@ -61,6 +75,5 @@
 </div>
 </body>
 </html>
-
 
 

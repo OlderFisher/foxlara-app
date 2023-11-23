@@ -4,6 +4,7 @@ namespace Tests;
 
 use Illuminate\Contracts\Console\Kernel;
 use Illuminate\Foundation\Application;
+use Illuminate\Support\Facades\Artisan;
 
 trait CreatesApplication
 {
@@ -17,5 +18,12 @@ trait CreatesApplication
         $app->make(Kernel::class)->bootstrap();
 
         return $app;
+    }
+
+    public function setUp(): void
+    {
+        parent::setUp();
+        Artisan::call('migrate');
+        Artisan::call('db:seed');
     }
 }

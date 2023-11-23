@@ -19,7 +19,7 @@ paths:
             type: string
       responses:
         '200':
-          description: 'Monaco Race Report successful json|xml data return'
+          description: "Monaco Race Report successful json|xml data return.\n     *       Response object = { 'key' => {parameters} ....}. key - is a pilot abbreviation (type=string, length=3)"
           content:
             application/json:
               schema:

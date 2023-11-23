@@ -32,7 +32,7 @@ class ReportController extends Controller
      *     ),
      *     @OA\Response(
      *      response="200",
-     *      description="Monaco Race Report successful json|xml data return",
+     *      description="Monaco Race Report successful json|xml data return. Response object = { 'key' => {parameters} ....}. key - is a pilot abbreviation (type=string, length=3)",
      *      @OA\MediaType(
      *          mediaType="application/json",
      *          @OA\Schema(
