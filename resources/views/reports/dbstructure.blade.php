@@ -65,7 +65,12 @@ use Illuminate\Support\Facades\Schema;
                 </thead>
                 <tbody>
                 @foreach ($tables as $table)
-                    @if($table->tablename === 'migrations' || $table->tablename === 'personal_access_tokens')
+                    @if($table->tablename === 'migrations' ||
+                        $table->tablename === 'personal_access_tokens' ||
+                        $table->tablename === 'groups' ||
+                        $table->tablename === 'students' ||
+                        $table->tablename === 'courses'
+                    )
                         @php continue @endphp
                     @endif
                     <tr>

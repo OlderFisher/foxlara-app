@@ -21,5 +21,6 @@ class DatabaseSeeder extends Seeder
         $this->callWith(TeamsSeeder::class, ['raceReport' => $raceReport]);
         $this->callWith(PilotsSeeder::class, ['raceReport' => $raceReport]);
         $this->callWith(ResultsSeeder::class, ['raceReport' => $raceReport]);
+        $this->callWith(GroupsSeeder::class);
     }
 }
