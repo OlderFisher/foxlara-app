@@ -31,14 +31,14 @@ use Illuminate\Support\Facades\Schema;
     <div class="p-4 lg:p-8">
         <div class="text-left">
             <div>
-                <h2 class="font-semibold text-xl">MONACO RACE PILOTS APP DATABASE STRUCTURE</h2>
+                <h2 class="font-semibold text-xl">STUDENTS AND COURSES CRUD APP DATABASE STRUCTURE</h2>
             </div>
         </div>
     </div>
     <div class="p-4 lg:p-8">
         <h3 class="font-semibold">DataBase structure drawing</h3>
         <hr>
-        <img src="{{ asset('images/database_scheme.png') }}" alt="database scheme" width="400px"
+        <img src="{{ asset('images/students_courses.png') }}" alt="database scheme" width="400px"
              height="auto">
     </div>
 
