@@ -14,7 +14,7 @@ return new class extends Migration {
             $table->id();
             $table->string('first_name');
             $table->string('last_name');
-            $table->integer('group_id');
+            $table->integer('group_id')->nullable();
             $table->foreign('group_id')
                 ->references('id')
                 ->on('groups')
