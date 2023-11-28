@@ -101,7 +101,7 @@
     </div>
 
     <div class="p-4 lg:p-8">
-        <h3 class="font-semibold">TASK 9 : SQL CRUD Application</h3>
+        <h3 class="font-semibold">TASK 9 : SQL Students and Courses Application</h3>
         <hr>
         <p class="flex">Database Structure ( Scheme Drawing. Tables structure and content)
             <a href="/crudstructure" class="" target="_blank">
