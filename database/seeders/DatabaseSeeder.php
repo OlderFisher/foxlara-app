@@ -17,12 +17,14 @@ class DatabaseSeeder extends Seeder
 
         $monacoRace = new MonacoReport();
         $raceReport = $monacoRace->buildRaceReport('pilot_team');
-
+        // Monaco Race Report Seeders
         $this->callWith(TeamsSeeder::class, ['raceReport' => $raceReport]);
         $this->callWith(PilotsSeeder::class, ['raceReport' => $raceReport]);
         $this->callWith(ResultsSeeder::class, ['raceReport' => $raceReport]);
+        // Students and Courses Seeders
         $this->callWith(GroupsSeeder::class);
         $this->callWith(CoursesSeeder::class);
         $this->callWith(StudentsSeeder::class);
+//        $this->callWith(CoursesStudentsSeeder::class);
     }
 }
