@@ -24,7 +24,7 @@ class GroupsController extends Controller
     /**
      * @OA\Get(
      *     path="/api/v1/groups",
-     *     summary="Get sudents group with students quantity and students count limitstion",
+     *     summary="Get sudents group with students quantity and students count limitation",
      *     @OA\Parameter(
      *         name="count",
      *         in="query",

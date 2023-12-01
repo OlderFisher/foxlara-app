@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\V1\GroupsController;
 use App\Http\Controllers\Api\V1\ReportController;
+use App\Http\Controllers\Api\V1\StudentsController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
