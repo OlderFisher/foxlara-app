@@ -112,8 +112,8 @@
                 </svg>
             </a>
         </p>
-        <p class="flex">Monaco Racing Report on DataBase data.
-            <a href="/crudapp" class="" target="_blank">
+        <p class="flex">University students groups.
+            <a href="/api/v1/groups" class="" target="_blank">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                      class="self-center shrink-0 stroke-red-500 w-6 h-6 mx-6">
                     <path stroke-linecap="round" stroke-linejoin="round"

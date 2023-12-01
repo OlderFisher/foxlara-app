@@ -15,7 +15,7 @@ class GroupsSeeder extends Seeder
     {
         for ($i = 0; $i < 10; $i++) {
             DB::table('groups')->insert([
-                'group_name' => strtoupper(Str::random(3)).'-'.rand(10, 90),
+                'group_name' => Str::upper(Str::random(3)).'-'.rand(10, 90),
                 'created_at' => date("Y-m-d H:i:s"),
                 'updated_at' => date("Y-m-d H:i:s"),
             ]);
