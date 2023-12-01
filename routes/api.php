@@ -21,3 +21,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 Route::get('/v1/report', [ReportController::class, 'index']);
 Route::get('/v1/groups', [GroupsController::class, 'index']);
+Route::get('/v1/students', [StudentsController::class, 'index']);

@@ -13,9 +13,18 @@ class GroupsSeeder extends Seeder
      */
     public function run(): void
     {
+        $groupNames = [];
+        $namesCount = 0;
+        while ($namesCount < 10) {
+            $name = Str::random(2);
+            if (!in_array($name, $groupNames) && preg_match('/[a-zA-Z]{2}/', $name)) {
+                $groupNames[] = $name;
+                $namesCount++;
+            }
+        }
         for ($i = 0; $i < 10; $i++) {
             DB::table('groups')->insert([
-                'group_name' => Str::upper(Str::random(2)).'-'.rand(10, 90),
+                'group_name' => Str::upper($groupNames[$i]).'-'.rand(10, 90),
                 'created_at' => date("Y-m-d H:i:s"),
                 'updated_at' => date("Y-m-d H:i:s"),
             ]);
