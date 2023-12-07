@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
-use App\Models\Students;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Route;
 use OpenApi\Annotations as OA;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -72,7 +72,7 @@ class StudentsController extends Controller
                 'students.last_name',
                 'students.group_id',
                 'groups.group_name'
-            )->get();
+            )->orderBy('students.id')->get();
         } else {
             $students = DB::table('students')->
             leftJoin('groups', 'students.group_id', '=', 'groups.id')->
@@ -82,10 +82,11 @@ class StudentsController extends Controller
         return response()->json($students, 200, [], 0);
     }
 
-    public function destroy(Request $request, $id): Response
+    public function destroy(Request $request): Response
     {
-        Students::destroy($id);
-        return response()->json('student with id='.$id.' successfully deleted', 200, [], 0);
+        $id = $request->post('studentId');
+        DB::select('delete * from students where students.id = :sid', ['sid' => $id]);
+        return response()->json('OK', 200, [], 0);
     }
 
     public function store(Request $request): Response
@@ -102,7 +103,10 @@ class StudentsController extends Controller
             'created_at' => date("Y-m-d H:i:s"),
             'updated_at' => date("Y-m-d H:i:s"),
         ]);
-        return response()->json('new student successfully created', 200, [], 0);
+        $request = Request::create('api/v1/students', 'GET');
+        $response = Route::dispatch($request);
+        $studentsList = json_decode($response->getContent());
+        return response()->json($studentsList, 200, [], 0);
     }
 
 }

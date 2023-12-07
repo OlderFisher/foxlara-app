@@ -24,4 +24,4 @@ Route::get('/v1/report', [ReportController::class, 'index']);
 Route::get('/v1/groups', [GroupsController::class, 'index']);
 Route::get('/v1/students', [StudentsController::class, 'index']);
 Route::post('/v1/students/', [StudentsController::class, 'store']);
-Route::delete('/v1/students/{studentId}', [StudentsController::class, 'destroy']);
+Route::post('/v1/students/{studentId}', [StudentsController::class, 'destroy']);

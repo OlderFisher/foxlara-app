@@ -21,7 +21,7 @@ class CrudAppController extends Controller
         return view('studentsCrud', ['dbData' => $studentsList]);
     }
 
-    public function students(Request $request): Application|Factory|View|\Illuminate\Foundation\Application
+    public function show(Request $request): Application|Factory|View|\Illuminate\Foundation\Application
     {
         $groupName = $request->get('group_name') ?? "";
         $request = Request::create('api/v1/students'.'/?groupName='.$groupName, 'GET');
@@ -32,21 +32,17 @@ class CrudAppController extends Controller
 
     public function store(Request $request): Application|Factory|View|\Illuminate\Foundation\Application
     {
-        $request = Request::create(
-            'api/v1/students',
-            'POST',
-            $request->all()
-        );
         $firstName = ucfirst(trim($request->post('first_name')));
         $lastName = ucfirst(trim($request->post('last_name')));
         $groupName = strtoupper(trim($request->post('group_name')));
         $message = null;
 
+        $request = Request::create(
+            'api/v1/students',
+            'POST',
+            $request->all()
+        );
         $response = Route::dispatch($request);
-
-        if (strlen($firstName) < 3 || strlen($lastName) < 3) {
-            redirect('/crudapp');
-        }
 
         if ($response->getStatusCode() == 200) {
             $request = Request::create('api/v1/students'.'/?groupName='.$groupName, 'GET');
@@ -56,6 +52,24 @@ class CrudAppController extends Controller
         } else {
             redirect('/crudapp');
         }
+        return view('studentsCrud', ['dbData' => $studentsList, 'message' => trim($message)]);
+    }
+
+    public function destroy(Request $request): Application|Factory|View|\Illuminate\Foundation\Application
+    {
+        $studentId = $request->post('student_id');
+        $request = Request::create("api/v1/students/{studentId}", 'POST', ['studentId' => $studentId]);
+        $response = Route::dispatch($request);
+
+        $message = null;
+        $studentsList = [];
+        if ($response->getStatusCode() == 200) {
+            $request = Request::create('api/v1/students', 'GET');
+            $response = Route::dispatch($request);
+            $studentsList = json_decode($response->getContent());
+            $message = 'Student with ID '.$studentId.' successfully deleted';
+        }
+
         return view('studentsCrud', ['dbData' => $studentsList, 'message' => trim($message)]);
     }
 }

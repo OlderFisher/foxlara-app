@@ -125,6 +125,27 @@
                 </div>
             </form>
             {{--            --}}
+            {{--            Request Form to delete student by id--}}
+            <form action='/crudapp/students/destroy' method='POST'
+                  id="delete-form" class="dialog-form border border-solid rounded px-10 py-5 text-center"
+            >
+                @csrf
+                <p class="text-left pb-5">Delete student by ID</p>
+                @if(isset($message))
+                    <p class="text-left pb-4 text-sky-800">{{$message}}</p>
+                @endif
+
+                <div class="flex flex-grow-1 items-center justify-between">
+                    <label for="student_id" class=" text-left">Student ID &nbsp;</label>
+                    <input type="number" id="student_id" name="student_id" min="1"
+                           class="border border-info border-solid py-1 px-3 mb-2"
+                    >
+                    <input type="submit"
+                           class="btn btn-success border border-info rounded bg-dark px-5 py-2 bg-sky-800 text-white"
+                           value="Delete student">
+                </div>
+            </form>
+            {{--            --}}
         </div>
     </div>
 </div>
