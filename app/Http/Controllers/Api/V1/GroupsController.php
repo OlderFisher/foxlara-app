@@ -64,8 +64,8 @@ class GroupsController extends Controller
 
         $groups = DB::select(
             "select id,group_name,
-                    (select count(*) from students where students.group_id=groups.id ) as students_count
-                    from groups   group by group_name,id order by students_count asc"
+                    (select count(*) from students where students.group_id=groups.id ) as students_count 
+                    from groups  group by group_name,id  order by students_count asc"
         );
 
         $filteredGroups = [];

@@ -28,4 +28,7 @@ Route::get('/dbstructure', [DbStructureController::class, 'index']);
 Route::get('/dbreport', [ReportDbController::class, 'index']);
 Route::get('/crudstructure', [CrudStructureController::class, 'index']);
 Route::get('/crudapp', [CrudAppController::class, 'index']);
+Route::get('/crudapp/students', [CrudAppController::class, 'students']);
+Route::post('/crudapp/students/store', [CrudAppController::class, 'store']);
+Route::post('/crudapp/deletestudent', [CrudAppController::class, 'desletestudent']);
 
