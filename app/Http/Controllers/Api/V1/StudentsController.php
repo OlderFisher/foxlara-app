@@ -76,7 +76,8 @@ class StudentsController extends Controller
         } else {
             $students = DB::table('students')->
             leftJoin('groups', 'students.group_id', '=', 'groups.id')->
-            select('students.id', 'students.first_name', 'students.last_name', 'groups.group_name')->get();
+            select('students.id', 'students.first_name', 'students.last_name', 'groups.group_name')->
+            get();
         }
 
         return response()->json($students, 200, [], 0);
@@ -84,9 +85,15 @@ class StudentsController extends Controller
 
     public function destroy(Request $request): Response
     {
-        $id = $request->post('studentId');
-        DB::select('delete * from students where students.id = :sid', ['sid' => $id]);
-        return response()->json('OK', 200, [], 0);
+        $allData = $request->all();
+        $id = (int)$allData['student_id'];
+
+        $count = DB::table('students')->delete($id);
+        if ($count > 0) {
+            return response()->json('OK', 200, [], 0);
+        } else {
+            return response()->json('ERROR', 400, [], 0);
+        }
     }
 
     public function store(Request $request): Response
@@ -96,7 +103,7 @@ class StudentsController extends Controller
         $groupName = ucfirst(trim($request->post('group_name')));
         $groupId = DB::table('groups')->where('group_name', $groupName)->get('id');
 
-        DB::table('students')->insert([
+        $count = DB::table('students')->insert([
             'first_name' => $firstName,
             'last_name' => $lastName,
             'group_id' => $groupId[0]->id,
@@ -106,7 +113,11 @@ class StudentsController extends Controller
         $request = Request::create('api/v1/students', 'GET');
         $response = Route::dispatch($request);
         $studentsList = json_decode($response->getContent());
-        return response()->json($studentsList, 200, [], 0);
+        if ($count > 0) {
+            return response()->json($studentsList, 200, [], 0);
+        } else {
+            return response()->json($studentsList, 400, [], 0);
+        }
     }
 
 }

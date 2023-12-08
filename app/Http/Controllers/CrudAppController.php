@@ -45,13 +45,13 @@ class CrudAppController extends Controller
         $response = Route::dispatch($request);
 
         if ($response->getStatusCode() == 200) {
-            $request = Request::create('api/v1/students'.'/?groupName='.$groupName, 'GET');
-            $response = Route::dispatch($request);
-            $studentsList = json_decode($response->getContent());
             $message = 'New student '.$firstName.' '.$lastName.' for group '.$groupName.' successfully created';
         } else {
-            redirect('/crudapp');
+            $message = 'Something went wrong with new student creation';
         }
+        $request = Request::create('api/v1/students'.'/?groupName='.$groupName, 'GET');
+        $response = Route::dispatch($request);
+        $studentsList = json_decode($response->getContent());
         return view('studentsCrud', ['dbData' => $studentsList, 'message' => trim($message)]);
     }
 
@@ -64,11 +64,13 @@ class CrudAppController extends Controller
         $message = null;
         $studentsList = [];
         if ($response->getStatusCode() == 200) {
-            $request = Request::create('api/v1/students', 'GET');
-            $response = Route::dispatch($request);
-            $studentsList = json_decode($response->getContent());
             $message = 'Student with ID '.$studentId.' successfully deleted';
+        } else {
+            $message = 'Something went wrong during Student with ID '.$studentId.' deletion';
         }
+        $request = Request::create('api/v1/students', 'GET');
+        $response = Route::dispatch($request);
+        $studentsList = json_decode($response->getContent());
 
         return view('studentsCrud', ['dbData' => $studentsList, 'message' => trim($message)]);
     }

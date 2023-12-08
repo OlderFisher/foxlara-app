@@ -4,10 +4,10 @@ module.exports = {
         "./resources/**/*.blade.php",
         "./resources/**/*.js",
         "./resources/**/*.vue",
+        'node_modules/preline/dist/*.js',
     ],
     theme: {
         extend: {},
     },
     plugins: [],
 }
-
