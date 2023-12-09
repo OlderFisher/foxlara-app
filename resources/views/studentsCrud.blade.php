@@ -46,7 +46,12 @@
                         <tr>
                             <td class="border border-slate-300 text-center">{{$data->id}}</td>
                             <td class="border border-slate-300 text-left">{{$data->first_name}} {{$data->last_name}}</td>
-                            <td class="border border-slate-300 text-center">{{$data->group_name}}</td>
+                            @if($data->group_name === 'free')
+                                <td class="border border-slate-300 text-center"
+                                    style="color:cadetblue;">{{$data->group_name}}</td>
+                            @else
+                                <td class="border border-slate-300 text-center">{{$data->group_name}}</td>
+                            @endif
                         </tr>
                     @endforeach
                     </tbody>
