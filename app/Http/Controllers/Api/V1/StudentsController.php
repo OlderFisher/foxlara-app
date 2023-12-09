@@ -339,6 +339,10 @@ class StudentsController extends Controller
         return response()->json($studentsList, $statusCode, []);
     }
 
+    /**
+     * Function to get all  students list
+     * @return string
+     */
     private function getAllStudents(): string
     {
         $request = Request::create('api/v1/students', 'GET');
@@ -347,6 +351,11 @@ class StudentsController extends Controller
         return $response->getContent();
     }
 
+    /**
+     * Function to find group id by group name
+     * @param  string  $groupName
+     * @return int
+     */
     private function getGroupIdByGroupName(string $groupName): int
     {
         $sql = DB::table('groups')->where('group_name', $groupName)->get('id');
