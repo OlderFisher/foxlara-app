@@ -84,6 +84,43 @@ class StudentsController extends Controller
         return response()->json($students, 200, [], 0);
     }
 
+    /**
+     * @OA\Post(
+     *     path="api/v1/students/{studentId}",
+     *     summary="Delete student by studentId",
+     *     @OA\Parameter(
+     *         name="studentId",
+     *         in="params",
+     *         description="Student Id for deletion",
+     *         required=true,
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Response(
+     *      response="200",
+     *      description="Students list with group limit filter successful json data return. Response object = { {parameters} ....}.)",
+     *      @OA\MediaType(
+     *          mediaType="application/json",
+     *          @OA\Schema(
+     *              type="object",
+     *              @OA\AdditionalProperties(
+     *                  ref="#/components/schemas/Students"
+     *              ),
+     *          )
+     *      ),
+     *     ),
+     * )
+     * @OA\Schema(
+     *      schema="Students",
+     *      type="object",
+     *
+     *      @OA\Property(
+     *        property="studentId",
+     *        type="string",
+     *        example="21"
+     *      ),
+     *    )
+     */
+
     public function destroy(Request $request): Response
     {
         $allData = $request->all();
@@ -99,6 +136,66 @@ class StudentsController extends Controller
         return response()->json($studentsList, $statusCode, [], 0);
     }
 
+    /**
+     * @OA\Post(
+     *     path="api/v1/students",
+     *     summary="Add new student",
+     *     @OA\Parameter(
+     *         name="first_name",
+     *         in="body",
+     *         description="Student first name",
+     *         required=true,
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Parameter(
+     *          name="last_name",
+     *          in="body",
+     *          description="Student last name",
+     *          required=true,
+     *          @OA\Schema(type="string")
+     *      ),
+     *     @OA\Parameter(
+     *          name="group_name",
+     *          in="body",
+     *          description="Group name to add student",
+     *          required=true,
+     *          @OA\Schema(type="string")
+     *      ),
+     *     @OA\Response(
+     *      response="200",
+     *      description="Students list with group limit filter successful json data return. Response object = { {parameters} ....}.)",
+     *      @OA\MediaType(
+     *          mediaType="application/json",
+     *          @OA\Schema(
+     *              type="object",
+     *              @OA\AdditionalProperties(
+     *                  ref="#/components/schemas/Students"
+     *              ),
+     *          )
+     *      ),
+     *     ),
+     * )
+     * @OA\Schema(
+     *      schema="Students",
+     *      type="object",
+     *
+     *      @OA\Property(
+     *        property="first_name",
+     *        type="string",
+     *        example="Michael"
+     *      ),
+     *     @OA\Property(
+     *         property="last_name",
+     *         type="string",
+     *         example="Frank"
+     *       ),
+     *     @OA\Property(
+     *         property="group_name",
+     *         type="string",
+     *         example="NO-21"
+     *       ),
+     *    )
+     */
     public function store(Request $request): Response
     {
         $allData = $request->all();
@@ -124,6 +221,56 @@ class StudentsController extends Controller
         return response()->json($studentsList, $statusCode, [], 0);
     }
 
+    /**
+     * @OA\Post(
+     *     path="api/v1/students/{studentId}/groups/{groupId}",
+     *     summary="Transfer student with studentId to group with groupId",
+     *     @OA\Parameter(
+     *         name="studentId",
+     *         in="params",
+     *         description="Student id",
+     *         required=true,
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Parameter(
+     *          name="groupId",
+     *          in="params",
+     *          description="Group id",
+     *          required=true,
+     *          @OA\Schema(type="string")
+     *      ),
+     *
+     *     @OA\Response(
+     *      response="200",
+     *      description="Students list with group limit filter successful json data return. Response object = { {parameters} ....}.)",
+     *      @OA\MediaType(
+     *          mediaType="application/json",
+     *          @OA\Schema(
+     *              type="object",
+     *              @OA\AdditionalProperties(
+     *                  ref="#/components/schemas/Students"
+     *              ),
+     *          )
+     *      ),
+     *     ),
+     * )
+     * @OA\Schema(
+     *      schema="Students",
+     *      type="object",
+     *
+     *      @OA\Property(
+     *        property="studentId",
+     *        type="string",
+     *        example="21"
+     *      ),
+     *     @OA\Property(
+     *         property="groupId",
+     *         type="string",
+     *         example="4"
+     *       ),
+     *
+     *    )
+     */
     public function update(Request $request): Response
     {
         $allData = $request->all();
@@ -140,6 +287,42 @@ class StudentsController extends Controller
         return response()->json($studentsList, $statusCode, []);
     }
 
+    /**
+     * @OA\Post(
+     *     path="api/v1/groups/{groupId}/students/{studentId}",
+     *     summary="Remove student from current group ( transfer to free )",
+     *     @OA\Parameter(
+     *         name="studentId",
+     *         in="params",
+     *         description="Student id",
+     *         required=true,
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Response(
+     *      response="200",
+     *      description="Students list with group limit filter successful json data return. Response object = { {parameters} ....}.)",
+     *      @OA\MediaType(
+     *          mediaType="application/json",
+     *          @OA\Schema(
+     *              type="object",
+     *              @OA\AdditionalProperties(
+     *                  ref="#/components/schemas/Students"
+     *              ),
+     *          )
+     *      ),
+     *     ),
+     * )
+     * @OA\Schema(
+     *      schema="Students",
+     *      type="object",
+     *
+     *      @OA\Property(
+     *        property="studentId",
+     *        type="string",
+     *        example="21"
+     *      ),
+     *    )
+     */
     public function remove(Request $request): Response
     {
         $allData = $request->all();
