@@ -77,6 +77,7 @@ class StudentsController extends Controller
             $students = DB::table('students')->
             leftJoin('groups', 'students.group_id', '=', 'groups.id')->
             select('students.id', 'students.first_name', 'students.last_name', 'groups.group_name')->
+            orderBy('students.id')->
             get();
         }
 
@@ -89,35 +90,68 @@ class StudentsController extends Controller
         $id = (int)$allData['student_id'];
 
         $count = DB::table('students')->delete($id);
-        if ($count > 0) {
-            return response()->json('OK', 200, [], 0);
-        } else {
-            return response()->json('ERROR', 400, [], 0);
+
+        $statusCode = 200;
+        if ($count == 0) {
+            $statusCode = 400;
         }
+        $studentsList = json_decode($this->getAllStudents());
+        return response()->json($studentsList, $statusCode, [], 0);
     }
 
     public function store(Request $request): Response
     {
-        $firstName = ucfirst(trim($request->post('first_name')));
-        $lastName = ucfirst(trim($request->post('last_name')));
-        $groupName = ucfirst(trim($request->post('group_name')));
-        $groupId = DB::table('groups')->where('group_name', $groupName)->get('id');
+        $allData = $request->all();
+        $firstName = $allData['first_name'];
+        $lastName = $allData['last_name'];
+        $groupName = $allData['group_name'];
+        $groupId = $this->getGroupIdByGroupName($groupName);
 
         $count = DB::table('students')->insert([
             'first_name' => $firstName,
             'last_name' => $lastName,
-            'group_id' => $groupId[0]->id,
+            'group_id' => $groupId,
             'created_at' => date("Y-m-d H:i:s"),
             'updated_at' => date("Y-m-d H:i:s"),
         ]);
+
+        if (!$count) {
+            $statusCode = 500;
+        } else {
+            $statusCode = 200;
+        }
+        $studentsList = json_decode($this->getAllStudents());
+        return response()->json($studentsList, $statusCode, [], 0);
+    }
+
+    public function update(Request $request): Response
+    {
+        $allData = $request->all();
+        $student_id = (int)$allData['student_id'];
+        $group_id = $this->getGroupIdByGroupName($allData['group_name']);
+
+        $count = DB::table('students')->where('id', $student_id)->update(['group_id' => $group_id]);
+
+        $statusCode = 200;
+        if ($count == 0) {
+            $statusCode = 400;
+        }
+        $studentsList = json_decode($this->getAllStudents());
+        return response()->json($studentsList, $statusCode, []);
+    }
+
+    private function getAllStudents(): string
+    {
         $request = Request::create('api/v1/students', 'GET');
         $response = Route::dispatch($request);
-        $studentsList = json_decode($response->getContent());
-        if ($count > 0) {
-            return response()->json($studentsList, 200, [], 0);
-        } else {
-            return response()->json($studentsList, 400, [], 0);
-        }
+
+        return $response->getContent();
+    }
+
+    private function getGroupIdByGroupName(string $groupName): int
+    {
+        $sql = DB::table('groups')->where('group_name', $groupName)->get('id');
+        return (int)$sql[0]->id;
     }
 
 }

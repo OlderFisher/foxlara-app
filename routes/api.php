@@ -25,3 +25,5 @@ Route::get('/v1/groups', [GroupsController::class, 'index']);
 Route::get('/v1/students', [StudentsController::class, 'index']);
 Route::post('/v1/students/', [StudentsController::class, 'store']);
 Route::post('/v1/students/{studentId}', [StudentsController::class, 'destroy']);
+Route::post('/v1/students/{studentId}/groups/{groupId}', [StudentsController::class, 'update']);
+Route::post('/v1/groups/{groupId}/students/{studentId}', [GroupsController::class, 'remove']);

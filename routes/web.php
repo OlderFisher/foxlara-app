@@ -31,4 +31,6 @@ Route::get('/crudapp', [CrudAppController::class, 'index']);
 Route::get('/crudapp/students', [CrudAppController::class, 'show']);
 Route::post('/crudapp/students/store', [CrudAppController::class, 'store']);
 Route::post('/crudapp/students/destroy', [CrudAppController::class, 'destroy']);
+Route::post('/crudapp/groups/students/update', [CrudAppController::class, 'update']);
+Route::post('/crudapp/groups/students/remove', [CrudAppController::class, 'remove']);
 
