@@ -61,7 +61,7 @@ class StudentsController extends Controller
     public function index(Request $request): Response
     {
         $groupName = $request->get('group_name');
-        if ($groupName && strlen($groupName) === 5) {
+        if ($groupName && strlen($groupName) >= 4) {
             $groupId = DB::table('groups')->where('group_name', $groupName)->get('id');
             $students = DB::table('students')->
             leftJoin('groups', 'students.group_id', '=', 'groups.id')->
@@ -144,8 +144,9 @@ class StudentsController extends Controller
     {
         $allData = $request->all();
         $student_id = (int)$allData['student_id'];
+        $group_id = $this->getGroupIdByGroupName('free');
 
-        $count = DB::table('students')->where('id', $student_id)->update(['group_id' => null]);
+        $count = DB::table('students')->where('id', $student_id)->update(['group_id' => $group_id]);
 
         $statusCode = 200;
         if ($count == 0) {

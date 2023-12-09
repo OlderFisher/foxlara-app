@@ -59,7 +59,6 @@ class StudentsSeeder extends Seeder
         foreach ($ids as $id) {
             $this->groups[] = $id->id;
         }
-        $this->groups[] = null; // Student can be without the group
 
         for ($i = 0; $i < count($this->students); $i++) {
             $this->students[$i]['group_id'] = $this->groups[rand(0, count($this->groups) - 1)];

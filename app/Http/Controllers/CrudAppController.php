@@ -15,18 +15,15 @@ class CrudAppController extends Controller
 {
     public function index(): Application|Factory|View|\Illuminate\Foundation\Application
     {
-        $request = Request::create('api/v1/students', 'GET');
-        $response = Route::dispatch($request);
+        $response = self::apiCall('api/v1/students');
         $studentsList = json_decode($response->getContent());
-
         return view('studentsCrud', ['dbData' => $studentsList]);
     }
 
     public function show(Request $request): Application|Factory|View|\Illuminate\Foundation\Application
     {
-        $groupName = $request->get('group_name') ?? "";
-        $request = Request::create('api/v1/students'.'/?groupName='.$groupName, 'GET');
-        $response = Route::dispatch($request);
+        $groupName = $request->get('group_name');
+        $response = self::apiCall('api/v1/students'.'/?groupName='.$groupName);
         $studentsList = json_decode($response->getContent());
 
         return view('studentsCrud', ['dbData' => $studentsList]);
@@ -39,12 +36,14 @@ class CrudAppController extends Controller
         $lastName = $allData['last_name'];
         $groupName = $allData['group_name'];
 
-        $request = Request::create(
-            'api/v1/students',
-            'POST',
-            $request->all()
-        );
-        $response = Route::dispatch($request);
+        if (!isset($firstName) || !isset($lastName)) {
+            $response = self::apiCall('api/v1/students');
+            $studentsList = json_decode($response->getContent());
+            $message = 'Can\'t add student without the personal data';
+            return view('studentsCrud', ['dbData' => $studentsList, 'message' => trim($message)]);
+        }
+
+        $response = self::apiCall('api/v1/students', 'POST', $request->all());
         $studentsList = json_decode($response->getContent());
 
         if ($response->getStatusCode() == 200) {
@@ -59,10 +58,9 @@ class CrudAppController extends Controller
     public function destroy(Request $request): Application|Factory|View|\Illuminate\Foundation\Application
     {
         $studentId = $request->post('student_id');
-        $request = Request::create("api/v1/students/{studentId}", 'POST', ['studentId' => $studentId]);
-        $response = Route::dispatch($request);
-
+        $response = self::apiCall("api/v1/students/{studentId}", 'POST', ['studentId' => $studentId]);
         $studentsList = json_decode($response->getContent());
+
         if ($response->getStatusCode() == 200) {
             $message = 'Student with ID '.$studentId.' successfully deleted';
         } else {
@@ -78,12 +76,11 @@ class CrudAppController extends Controller
         $groupName = $request->post('group_name');
         $groupId = $this->getGroupIdByGroupName($groupName);
 
-        $request = Request::create(
+        $response = self::apiCall(
             "api/v1/students/{studentId}/groups/{groupId}",
             'POST',
             ['studentId' => $studentId, 'groupId' => $groupId]
         );
-        $response = Route::dispatch($request);
 
         $studentsList = json_decode($response->getContent());
         if ($response->getStatusCode() == 200) {
@@ -101,12 +98,11 @@ class CrudAppController extends Controller
         $sql = DB::table('students')->where('id', $studentId)->get('group_id');
         $groupId = $sql[0]->group_id;
 
-        $request = Request::create(
+        $response = self::apiCall(
             "api/v1/groups/{groupId}/students/{studentId}",
             'POST',
             ['groupId' => $groupId, 'studentId' => $studentId]
         );
-        $response = Route::dispatch($request);
 
         $studentsList = json_decode($response->getContent());
         if ($response->getStatusCode() == 200) {
@@ -124,5 +120,19 @@ class CrudAppController extends Controller
     {
         $sql = DB::table('groups')->where('group_name', $groupName)->get('id');
         return (int)$sql[0]->id;
+    }
+
+    private static function apiCall(
+        string $url,
+        string $method = 'GET',
+        ?array $params = [],
+    ): \Symfony\Component\HttpFoundation\Response {
+        $request = Request::create(
+            $url,
+            $method,
+            $params,
+        );
+
+        return Route::dispatch($request);
     }
 }
