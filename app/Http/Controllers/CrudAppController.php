@@ -95,6 +95,31 @@ class CrudAppController extends Controller
         return view('studentsCrud', ['dbData' => $studentsList, 'message' => trim($message)]);
     }
 
+    public function remove(Request $request): Application|Factory|View|\Illuminate\Foundation\Application
+    {
+        $studentId = $request->post('student_id');
+        $sql = DB::table('students')->where('id', $studentId)->get('group_id');
+        $groupId = $sql[0]->group_id;
+
+        $request = Request::create(
+            "api/v1/groups/{groupId}/students/{studentId}",
+            'POST',
+            ['groupId' => $groupId, 'studentId' => $studentId]
+        );
+        $response = Route::dispatch($request);
+
+        $studentsList = json_decode($response->getContent());
+        if ($response->getStatusCode() == 200) {
+            $sql = DB::table('groups')->where('id', $groupId)->get('group_name');
+            $groupName = $sql[0]->group_name;
+            $message = 'Student with ID = '.$studentId.' successfully removed from the group '.$groupName;
+        } else {
+            $message = 'Something went wrong during Student with ID '.$studentId;
+        }
+
+        return view('studentsCrud', ['dbData' => $studentsList, 'message' => trim($message)]);
+    }
+
     private function getGroupIdByGroupName(string $groupName): int
     {
         $sql = DB::table('groups')->where('group_name', $groupName)->get('id');

@@ -140,6 +140,21 @@ class StudentsController extends Controller
         return response()->json($studentsList, $statusCode, []);
     }
 
+    public function remove(Request $request): Response
+    {
+        $allData = $request->all();
+        $student_id = (int)$allData['student_id'];
+
+        $count = DB::table('students')->where('id', $student_id)->update(['group_id' => null]);
+
+        $statusCode = 200;
+        if ($count == 0) {
+            $statusCode = 400;
+        }
+        $studentsList = json_decode($this->getAllStudents());
+        return response()->json($studentsList, $statusCode, []);
+    }
+
     private function getAllStudents(): string
     {
         $request = Request::create('api/v1/students', 'GET');
