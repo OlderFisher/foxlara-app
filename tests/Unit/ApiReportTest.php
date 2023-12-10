@@ -85,12 +85,12 @@ class ApiReportTest extends TestCase
         }
         $group = $groupIdsCollection[rand(0, count($groupIdsCollection) - 1)];
 
-        $apiResponse = $this->post(
+        $this->post(
             'api/v1/students/{studentId}/groups/{groupId}',
             ['studentId' => $student['id'], 'groupId' => $group['id']]
         );
 
-        $apiResponse = $apiResponse = $this->get('api/v1/students/?groupName='.$group['group_name']);
+        $apiResponse = $this->get('api/v1/students/?groupName='.$group['group_name']);
         $student['group_name'] = $this->getGroupGroupNameById($group['id']);
 
         $apiResponse->assertStatus(200);
