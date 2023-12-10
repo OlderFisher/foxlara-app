@@ -54,7 +54,7 @@ declare(strict_types=1);
         >
     </div>
     <div class="flex flex-grow-1 items-center justify-between">
-        <label for="lastt_name" class="w-2/5 text-left">Last name &nbsp;</label>
+        <label for="last_name" class="w-2/5 text-left">Last name &nbsp;</label>
         <input type="text" id="last_name" name="last_name"
                class="border border-info border-solid py-1 px-3 mb-2 w-3/5"
         >
@@ -86,8 +86,8 @@ declare(strict_types=1);
 
 
     <div class="flex flex-grow-1 items-center justify-between">
-        <label for="student_id" class=" text-left">Student ID &nbsp;</label>
-        <input type="number" id="student_id" name="student_id" min="1"
+        <label for="studentId" class=" text-left">Student ID &nbsp;</label>
+        <input type="number" id="studentId" name="studentId" min="1"
                class="border border-info border-solid py-1 px-3 mb-2"
         >
         <input type="submit"

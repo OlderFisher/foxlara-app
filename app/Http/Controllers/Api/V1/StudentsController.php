@@ -124,7 +124,7 @@ class StudentsController extends Controller
     public function destroy(Request $request): Response
     {
         $allData = $request->all();
-        $id = (int)$allData['student_id'];
+        $id = (int)$allData['studentId'];
 
         $count = DB::table('students')->delete($id);
 
@@ -274,8 +274,8 @@ class StudentsController extends Controller
     public function update(Request $request): Response
     {
         $allData = $request->all();
-        $student_id = (int)$allData['student_id'];
-        $group_id = $this->getGroupIdByGroupName($allData['group_name']);
+        $student_id = (int)$allData['studentId'];
+        $group_id = $allData['groupId'];
 
         $count = DB::table('students')->where('id', $student_id)->update(['group_id' => $group_id]);
 

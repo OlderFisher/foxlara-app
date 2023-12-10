@@ -70,11 +70,11 @@
         </div>
 
         <div class="right-side px-10" style="width:45%; height: auto">
-            @include('templates.tabs')
+            @include('templates.studentsForms')
+            @include('templates.groupsForms')
         </div>
     </div>
 </div>
-<script src="https://unpkg.com/@material-tailwind/html@latest/scripts/tabs.js"></script>
 
 </body>
 </html>

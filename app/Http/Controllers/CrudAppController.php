@@ -57,7 +57,7 @@ class CrudAppController extends Controller
 
     public function destroy(Request $request): Application|Factory|View|\Illuminate\Foundation\Application
     {
-        $studentId = $request->post('student_id');
+        $studentId = $request->post('studentId');
         $response = self::apiCall("api/v1/students/{studentId}", 'POST', ['studentId' => $studentId]);
         $studentsList = json_decode($response->getContent());
 
@@ -72,9 +72,8 @@ class CrudAppController extends Controller
 
     public function update(Request $request): Application|Factory|View|\Illuminate\Foundation\Application
     {
-        $studentId = $request->post('student_id');
-        $groupName = $request->post('group_name');
-        $groupId = $this->getGroupIdByGroupName($groupName);
+        $studentId = $request->post('studentId');
+        $groupId = $request->post('groupId');
 
         $response = self::apiCall(
             "api/v1/students/{studentId}/groups/{groupId}",
@@ -84,6 +83,8 @@ class CrudAppController extends Controller
 
         $studentsList = json_decode($response->getContent());
         if ($response->getStatusCode() == 200) {
+            $sql = DB::table('groups')->where('id', $groupId)->get('group_name');
+            $groupName = $sql[0]->group_name;
             $message = 'Student with ID = '.$studentId.' successfully transfered to group '.$groupName;
         } else {
             $message = 'Something went wrong during Student with ID '.$studentId;
