@@ -38,8 +38,8 @@ declare(strict_types=1);
     <p class="text-left pb-5">Remove student from the current group</p>
 
     <div class="flex flex-grow-1 items-center justify-between">
-        <label for="student_id" class="w-1/5 text-left">Student ID &nbsp;</label>
-        <input type="text" id="student_id" name="student_id"
+        <label for="studentId" class="w-1/5 text-left">Student ID &nbsp;</label>
+        <input type="text" id="studentId" name="studentId"
                class="border border-info border-solid py-1 px-3 mb-2 w-2/5"
         >
         <input type="submit"

@@ -5,7 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class CoursesStudentsSeeder extends Seeder
+class StudentsCoursesSeeder extends Seeder
 {
     private array $studentIds;
     private array $courseIds;
@@ -19,7 +19,7 @@ class CoursesStudentsSeeder extends Seeder
         $this->setCoursesStudents();
 
         foreach ($this->coursesStudents as $item) {
-            DB::table('courses_students')->insert([
+            DB::table('students_courses')->insert([
                 'student_id' => $item['student_id'],
                 'course_id' => $item['course_id'],
                 'created_at' => date("Y-m-d H:i:s"),

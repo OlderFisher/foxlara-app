@@ -326,7 +326,7 @@ class StudentsController extends Controller
     public function remove(Request $request): Response
     {
         $allData = $request->all();
-        $student_id = (int)$allData['student_id'];
+        $student_id = (int)$allData['studentId'];
         $group_id = $this->getGroupIdByGroupName('free');
 
         $count = DB::table('students')->where('id', $student_id)->update(['group_id' => $group_id]);

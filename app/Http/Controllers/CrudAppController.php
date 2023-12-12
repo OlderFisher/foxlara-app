@@ -95,7 +95,7 @@ class CrudAppController extends Controller
 
     public function remove(Request $request): Application|Factory|View|\Illuminate\Foundation\Application
     {
-        $studentId = $request->post('student_id');
+        $studentId = $request->post('studentId');
         $sql = DB::table('students')->where('id', $studentId)->get('group_id');
         $groupId = $sql[0]->group_id;
 
