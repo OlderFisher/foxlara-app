@@ -21,17 +21,39 @@
 </header>
 <hr/>
 <div id="main" class="container">
-    <div class="p-4 lg:p-8">
+    <div class="p-4 lg:p-8" style="width:45%">
         <div class="text-left">
             <div>
-                <h2 class="font-semibold text-xl">LARAVEL TASK 9: STUDENTS API CONTROL APPLICATION</h2>
+                <h2 class="font-semibold text-xl">REMOVE STUDENT FROM CURRENT GROUP</h2>
+                <p>Enter student ID in the form below</p>
+                <br>
+
+
+                <form method='POST'
+                      id="create-form" class="dialog-form border border-solid rounded px-10 py-5 text-center"
+                >
+                    @csrf
+                    <p class="text-left pb-5">Remove student from the current group</p>
+
+                    <div class="flex flex-grow-1 items-center justify-between">
+                        <label for="studentId" class="w-1/5 text-left">Student ID &nbsp;</label>
+                        <input type="text" id="studentId" name="studentId"
+                               class="border border-info border-solid py-1 px-3 mb-2 w-2/5"
+                        >
+                        <input type="submit"
+                               class="btn cursor-pointer btn-success border border-info rounded bg-dark px-5 py-2 bg-sky-800 text-white"
+                               value="Remove">
+                    </div>
+                </form>
+
             </div>
         </div>
     </div>
     <?php
     ?>
-    <div class="container flex flex-row" style="margin:0 auto; padding: 10px 40px;">
+    <div class="container flex flex-row " style="margin:0 auto 40px; padding: 10px 40px 40px 40px;">
         <div class="left-side" style="width:45%; height: 485px">
+            <h3 class="border border-solid border-bottom-2 border-current text-center mb-5">STUDENTS LIST</h3>
             <div style="width:100%; height: 485px;overflow-y:scroll;">
                 <table class="border-collapse border border-slate-400 ..." style="width:100%;">
                     <thead>
@@ -57,21 +79,10 @@
                     </tbody>
                 </table>
             </div>
-            <div>
-                @if(isset($message))
-                    @if(str_contains($message,'wrong'))
-                        <p class="text-left pt-3  pb-4 text-rose-600">{{$message}}</p>
-                    @else
-                        <p class="text-left pt-3  pb-4 text-blue-700">{{$message}}</p>
-                    @endif
-
-                @endif
-            </div>
         </div>
 
         <div class="right-side px-10" style="width:45%; height: auto">
-            @include('templates.studentsForms')
-            @include('templates.groupsForms')
+            <a href="/web/students" class="text-blue-500 hover:underline">Go to web CRUD page</a>
         </div>
     </div>
 </div>

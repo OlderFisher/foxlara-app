@@ -17,7 +17,7 @@ class CrudAppController extends Controller
     {
         $response = self::apiCall('api/v1/students');
         $studentsList = json_decode($response->getContent());
-        return view('studentsCrud', ['dbData' => $studentsList]);
+        return view('cruds.crudHome', ['dbData' => $studentsList]);
     }
 
     public function show(Request $request): Application|Factory|View|\Illuminate\Foundation\Application
@@ -29,7 +29,7 @@ class CrudAppController extends Controller
         return view('studentsCrud', ['dbData' => $studentsList]);
     }
 
-    public function store(Request $request): Application|Factory|View|\Illuminate\Foundation\Application
+    public function create(Request $request): Application|Factory|View|\Illuminate\Foundation\Application
     {
         $allData = $request->all();
         $firstName = $allData['first_name'];
