@@ -82,10 +82,16 @@
                         group</a>
                 </li>
                 <li>
-                    <a href="" class="text-blue-500 hover:underline">Transfer student from one course to another</a>
+                    <a href="/web/students/courses/add" class="text-blue-500 hover:underline">Add student to the new
+                        course</a>
                 </li>
                 <li>
-                    <a href="" class="text-blue-500 hover:underline">Remove student from the course</a>
+                    <a href="/web/students/courses/transfer" class="text-blue-500 hover:underline">Transfer student from
+                        one course to another</a>
+                </li>
+                <li>
+                    <a href="/web/students/courses/remove" class="text-blue-500 hover:underline">Remove student from the
+                        course</a>
                 </li>
             </ul>
         </div>

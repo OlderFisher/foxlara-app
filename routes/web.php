@@ -34,8 +34,14 @@ Route::get('web/students/create', [StudentsWebController::class, 'create']);
 Route::post('web/students/create', [StudentsWebController::class, 'create']);
 Route::get('web/students/destroy', [StudentsWebController::class, 'destroy']);
 Route::post('web/students/destroy', [StudentsWebController::class, 'destroy']);
-Route::get('web/students/groups/transfer', [StudentsWebController::class, 'transfer']);
-Route::post('web/students/groups/transfer', [StudentsWebController::class, 'transfer']);
-Route::get('web/students/groups/remove', [StudentsWebController::class, 'remove']);
-Route::post('web/students/groups/remove', [StudentsWebController::class, 'remove']);
+Route::get('web/students/groups/transfer', [StudentsWebController::class, 'groupTransfer']);
+Route::post('web/students/groups/transfer', [StudentsWebController::class, 'groupTransfer']);
+Route::get('web/students/groups/remove', [StudentsWebController::class, 'groupRemove']);
+Route::post('web/students/groups/remove', [StudentsWebController::class, 'groupRemove']);
+Route::get('web/students/courses/add', [StudentsWebController::class, 'courseAdding']);
+Route::post('web/students/courses/add', [StudentsWebController::class, 'courseAdding']);
+Route::get('web/students/courses/transfer', [StudentsWebController::class, 'courseTransfer']);
+Route::post('web/students/courses/transfer', [StudentsWebController::class, 'courseTransfer']);
+Route::get('web/students/courses/remove', [StudentsWebController::class, 'courseRemove']);
+Route::post('web/students/courses/remove', [StudentsWebController::class, 'courseRemove']);
 
