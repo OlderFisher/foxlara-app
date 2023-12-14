@@ -97,6 +97,24 @@ class StudentsWebController extends Controller
         return view('cruds.crudStudentsCourseRemove', ['dbData' => $studentsList]);
     }
 
+    public function courseAdding(Request $request): Application|Factory|View|\Illuminate\Foundation\Application
+    {
+        $allData = $request->all();
+        if (!empty($allData)) {
+            $studentId = (int)$allData['studentId'];
+            $courseId = $allData['courseId'];
+            $count = DB::table('students_courses')->where('student_id', $studentId)->where('course_id', $courseId)->get(
+                'id'
+            );
+            if (empty($count)) {
+                DB::table('students_courses')->insert(['student_id' => $studentId, 'course_id' => $courseId]);
+            }
+        }
+        $studentsList = $this->getStudentsList();
+
+        return view('cruds.crudStudentsCourseAdding', ['dbData' => $studentsList]);
+    }
+
     public function courseTransfer(Request $request): Application|Factory|View|\Illuminate\Foundation\Application
     {
         $allData = $request->all();
