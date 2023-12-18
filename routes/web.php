@@ -28,20 +28,28 @@ Route::get('/dbstructure', [DbStructureController::class, 'index']);
 Route::get('/dbreport', [ReportDbController::class, 'index']);
 //crud app routes
 Route::get('/crudstructure', [CrudStructureController::class, 'index']);
-Route::get('web/students', [StudentsWebController::class, 'index']);
-Route::get('web/students/groups', [StudentsWebController::class, 'show']);
-Route::get('web/students/create', [StudentsWebController::class, 'create']);
-Route::post('web/students/create', [StudentsWebController::class, 'create']);
-Route::get('web/students/destroy', [StudentsWebController::class, 'destroy']);
-Route::post('web/students/destroy', [StudentsWebController::class, 'destroy']);
-Route::get('web/students/groups/transfer', [StudentsWebController::class, 'groupTransfer']);
-Route::post('web/students/groups/transfer', [StudentsWebController::class, 'groupTransfer']);
-Route::get('web/students/groups/remove', [StudentsWebController::class, 'groupRemove']);
-Route::post('web/students/groups/remove', [StudentsWebController::class, 'groupRemove']);
-Route::get('web/students/courses/add', [StudentsWebController::class, 'courseAdding']);
-Route::post('web/students/courses/add', [StudentsWebController::class, 'courseAdding']);
-Route::get('web/students/courses/transfer', [StudentsWebController::class, 'courseTransfer']);
-Route::post('web/students/courses/transfer', [StudentsWebController::class, 'courseTransfer']);
-Route::get('web/students/courses/remove', [StudentsWebController::class, 'courseRemove']);
-Route::post('web/students/courses/remove', [StudentsWebController::class, 'courseRemove']);
+
+Route::prefix('web/students')->group(function () {
+    Route::get('/', [StudentsWebController::class, 'index']);
+    Route::get('/groups', [StudentsWebController::class, 'show']);
+    Route::get('/create', [StudentsWebController::class, 'create']);
+    Route::post('/create', [StudentsWebController::class, 'create']);
+    Route::get('/destroy', [StudentsWebController::class, 'destroy']);
+    Route::post('/destroy', [StudentsWebController::class, 'destroy']);
+});
+Route::prefix('web/students/groups')->group(function () {
+    Route::get('/transfer', [StudentsWebController::class, 'groupTransfer']);
+    Route::post('/transfer', [StudentsWebController::class, 'groupTransfer']);
+    Route::get('/remove', [StudentsWebController::class, 'groupRemove']);
+    Route::post('/remove', [StudentsWebController::class, 'groupRemove']);
+});
+Route::prefix('web/students/courses')->group(function () {
+    Route::get('/add', [StudentsWebController::class, 'courseAdding']);
+    Route::post('/add', [StudentsWebController::class, 'courseAdding']);
+    Route::get('/transfer', [StudentsWebController::class, 'courseTransfer']);
+    Route::post('/transfer', [StudentsWebController::class, 'courseTransfer']);
+    Route::get('/remove', [StudentsWebController::class, 'courseRemove']);
+    Route::post('/remove', [StudentsWebController::class, 'courseRemove']);
+});
+
 
