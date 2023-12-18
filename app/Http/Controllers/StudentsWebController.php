@@ -2,187 +2,158 @@
 
 namespace App\Http\Controllers;
 
+use App\CustomClasses\StudentsWebManager;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class StudentsWebController extends Controller
 {
     public function index(): Application|Factory|View|\Illuminate\Foundation\Application
     {
-        $students = DB::table('students')->
-        leftJoin('groups', 'students.group_id', '=', 'groups.id')->
-        select('students.id', 'students.first_name', 'students.last_name', 'groups.group_name')->
-        orderBy('students.id')->
-        get();
-        $studentsList = $students->toArray();
-        return view('cruds.crudHome', ['dbData' => $studentsList]);
+        return view(
+            'cruds.crudHome',
+            [
+                'dbData' => StudentsWebManager::getAllStudents()
+            ]
+        );
     }
 
     public function show(Request $request): Application|Factory|View|\Illuminate\Foundation\Application
     {
         $groupName = $request->get('groupName');
-        $studentsList = $this->getStudentsList($groupName);
-        return view('cruds.crudStudentsGroups', ['dbData' => $studentsList]);
+
+        return view(
+            'cruds.crudStudentsGroups',
+            [
+                'dbData' => StudentsWebManager::getAllStudentsByGroupName($groupName)
+            ]
+        );
     }
 
     public function create(Request $request): Application|Factory|View|\Illuminate\Foundation\Application
     {
         $allData = $request->all();
-        if (!empty($allData)) {
-            $firstName = $allData['first_name'];
-            $lastName = $allData['last_name'];
-            $groupId = $allData['group_id'];
-            $groupName = $this->getGroupNameById($groupId);
 
-            $count = DB::table('students')->insert([
-                'first_name' => $firstName,
-                'last_name' => $lastName,
-                'group_id' => $groupId,
-                'created_at' => date("Y-m-d H:i:s"),
-                'updated_at' => date("Y-m-d H:i:s"),
-            ]);
-            $studentsList = $this->getStudentsList($groupName);
-        } else {
-            $studentsList = $this->getStudentsList();
-        }
-        return view('cruds.crudStudentsCreate', ['dbData' => $studentsList]);
+        return view(
+            'cruds.crudStudentsCreate',
+            [
+                'dbData' => StudentsWebManager::createNewStudent($allData)
+            ]
+        );
     }
 
     public function destroy(Request $request): Application|Factory|View|\Illuminate\Foundation\Application
     {
         $allData = $request->all();
-        if (!empty($allData)) {
+
+        if ( ! empty($allData) && isset($allData['studentId'])) {
             $id = (int)$allData['studentId'];
-            DB::table('students')->delete($id);
+        } else {
+            $id = null;
         }
-        $studentsList = $this->getStudentsList();
-        return view('cruds.crudStudentsDestroy', ['dbData' => $studentsList]);
+
+        return view(
+            'cruds.crudStudentsDestroy',
+            [
+                'dbData' => StudentsWebManager::deleteStudentById($id)
+            ]
+        );
     }
 
     public function groupTransfer(Request $request): Application|Factory|View|\Illuminate\Foundation\Application
     {
-        $allData = $request->all();
-        if (!empty($allData)) {
+        $student_id = null;
+        $group_id   = null;
+        $allData    = $request->all();
+        if ( ! empty($allData)) {
             $student_id = (int)$allData['studentId'];
-            $group_id = $allData['groupId'];
-            DB::table('students')->where('id', $student_id)->update(['group_id' => $group_id]);
-
-            $groupName = $this->getGroupNameById($group_id);
-            $studentsList = $this->getStudentsList($groupName);
-        } else {
-            $studentsList = $this->getStudentsList();
+            $group_id   = $allData['groupId'];
         }
 
-        return view('cruds.crudStudentsGroupTransfer', ['dbData' => $studentsList]);
+        return view(
+            'cruds.crudStudentsGroupTransfer',
+            [
+                'dbData' => StudentsWebManager::transferStudentByIdToGroupId($student_id, $group_id)
+            ]
+        );
     }
 
     public function groupRemove(Request $request): Application|Factory|View|\Illuminate\Foundation\Application
     {
-        $allData = $request->all();
-
-        if (!empty($allData)) {
-            $student_id = $allData['studentId'];
-            $groupName = 'free';
-            $groupId = $this->getGroupIdByName($groupName);
-            DB::table('students')->where('id', $student_id)->update(['group_id' => $groupId]);
-
-            $studentsList = $this->getStudentsList($groupName);
-        } else {
-            $studentsList = $this->getStudentsList();
+        $studentId = null;
+        $allData   = $request->all();
+        if ( ! empty($allData)) {
+            $studentId = $allData['studentId'];
         }
 
-        return view('cruds.crudStudentsCourseRemove', ['dbData' => $studentsList]);
+        return view(
+            'cruds.crudStudentsGroupRemove',
+            [
+                'dbData' => StudentsWebManager::removeStudentByIdFromGroup($studentId)
+            ]
+        );
     }
 
     public function courseAdding(Request $request): Application|Factory|View|\Illuminate\Foundation\Application
     {
-        $allData = $request->all();
-        if (!empty($allData)) {
+        $studentId = null;
+        $courseId  = null;
+        $allData   = $request->all();
+        if ( ! empty($allData)) {
             $studentId = (int)$allData['studentId'];
-            $courseId = $allData['courseId'];
-            $count = DB::table('students_courses')->where('student_id', $studentId)->where('course_id', $courseId)->get(
-                'id'
-            );
-            if (empty($count)) {
-                DB::table('students_courses')->insert(['student_id' => $studentId, 'course_id' => $courseId]);
-            }
+            $courseId  = (int)$allData['courseId'];
         }
-        $studentsList = $this->getStudentsList();
 
-        return view('cruds.crudStudentsCourseAdding', ['dbData' => $studentsList]);
+
+        return view(
+            'cruds.crudStudentsCourseAdding',
+            [
+                'dbData' => StudentsWebManager::addStudentByIdToCourse($studentId, $courseId)
+            ]
+        );
     }
 
     public function courseTransfer(Request $request): Application|Factory|View|\Illuminate\Foundation\Application
     {
-        $allData = $request->all();
-        if (!empty($allData)) {
-            $student_id = (int)$allData['studentId'];
+        $student_id   = null;
+        $courseFromId = null;
+        $courseToId   = null;
+        $allData      = $request->all();
+        if ( ! empty($allData)) {
+            $student_id   = (int)$allData['studentId'];
             $courseFromId = $allData['courseIdFrom'];
-            $courseToId = $allData['courseIdTo'];
-            $sql = DB::table('students_courses')->
-            where('student_id', $student_id)->
-            where('course_id', $courseFromId)->
-            get('id');
-            DB::table('students_courses')->where('id', $sql[0]->id)->update(['course_id' => $courseToId]);
+            $courseToId   = $allData['courseIdTo'];
         }
-        $studentsList = $this->getStudentsList();
 
-        return view('cruds.crudStudentsCourseTransfer', ['dbData' => $studentsList]);
+        return view(
+            'cruds.crudStudentsCourseTransfer',
+            [
+                'dbData' => StudentsWebManager::transferStudentByIdFromCourseToCourse(
+                    $student_id,
+                    $courseFromId,
+                    $courseToId
+                )
+            ]
+        );
     }
 
     public function courseRemove(Request $request): Application|Factory|View|\Illuminate\Foundation\Application
     {
-        $allData = $request->all();
-
-        if (!empty($allData)) {
-            $student_id = $allData['studentId'];
-            $courseId = $allData['courseId'];
-            $sql = DB::table('students_courses')->
-            where('student_id', $student_id)->
-            where('course_id', $courseId)->
-            get('id');
-            DB::table('students_courses')->where('id', $sql[0]->id)->delete();
+        $studentId = null;
+        $courseId  = null;
+        $allData   = $request->all();
+        if ( ! empty($allData)) {
+            $studentId = $allData['studentId'];
+            $courseId  = $allData['courseId'];
         }
-        $studentsList = $this->getStudentsList();
-        return view('cruds.crudStudentsCourseRemove', ['dbData' => $studentsList]);
-    }
 
-    private function getStudentsList(string $groupName = null): array
-    {
-        if ($groupName && strlen($groupName) >= 4) {
-            $groupId = DB::table('groups')->where('group_name', $groupName)->get('id');
-            $students = DB::table('students')->
-            leftJoin('groups', 'students.group_id', '=', 'groups.id')->
-            where('students.group_id', $groupId[0]->id)->
-            select(
-                'students.id',
-                'students.first_name',
-                'students.last_name',
-                'students.group_id',
-                'groups.group_name'
-            )->orderBy('students.id')->get();
-        } else {
-            $students = DB::table('students')->
-            leftJoin('groups', 'students.group_id', '=', 'groups.id')->
-            select('students.id', 'students.first_name', 'students.last_name', 'groups.group_name')->
-            orderBy('students.id')->
-            get();
-        }
-        return $students->toArray();
-    }
-
-    private function getGroupNameById(int $groupId): string
-    {
-        $groupName = DB::table('groups')->where('id', $groupId)->get('group_name');
-        return $groupName[0]->group_name;
-    }
-
-    private function getGroupIdByName(string $groupName): string
-    {
-        $groupId = DB::table('groups')->where('group_name', $groupName)->get('id');
-        return $groupId[0]->id;
+        return view(
+            'cruds.crudStudentsCourseRemove',
+            [
+                'dbData' => StudentsWebManager::removeStudentByIdFromCourse($studentId, $courseId)
+            ]
+        );
     }
 }
