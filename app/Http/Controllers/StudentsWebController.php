@@ -7,6 +7,7 @@ use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class StudentsWebController extends Controller
 {
@@ -15,7 +16,7 @@ class StudentsWebController extends Controller
         return view(
             'cruds.crudHome',
             [
-                'dbData' => StudentsWebManager::getAllStudents()
+                'dbData' => $this->getAllStudents()
             ]
         );
     }
@@ -23,25 +24,23 @@ class StudentsWebController extends Controller
     public function show(Request $request): Application|Factory|View|\Illuminate\Foundation\Application
     {
         $groupName = $request->get('groupName');
+        if ( ! $groupName) {
+            $studentsList = $this->getAllStudents();
+        } else {
+            $studentsList = StudentsWebManager::getAllStudentsByGroupName($groupName);
+        }
 
-        return view(
-            'cruds.crudStudentsGroups',
-            [
-                'dbData' => StudentsWebManager::getAllStudentsByGroupName($groupName)
-            ]
-        );
+        return view('cruds.crudStudentsGroups', ['dbData' => $studentsList]);
     }
 
     public function create(Request $request): Application|Factory|View|\Illuminate\Foundation\Application
     {
         $allData = $request->all();
+        if ( ! empty($allData)) {
+            StudentsWebManager::createNewStudent($allData);
+        }
 
-        return view(
-            'cruds.crudStudentsCreate',
-            [
-                'dbData' => StudentsWebManager::createNewStudent($allData)
-            ]
-        );
+        return view('cruds.crudStudentsCreate', ['dbData' => $this->getAllStudents()]);
     }
 
     public function destroy(Request $request): Application|Factory|View|\Illuminate\Foundation\Application
@@ -49,111 +48,83 @@ class StudentsWebController extends Controller
         $allData = $request->all();
 
         if ( ! empty($allData) && isset($allData['studentId'])) {
-            $id = (int)$allData['studentId'];
-        } else {
-            $id = null;
+            StudentsWebManager::deleteStudentById((int)$allData['studentId']);
         }
 
-        return view(
-            'cruds.crudStudentsDestroy',
-            [
-                'dbData' => StudentsWebManager::deleteStudentById($id)
-            ]
-        );
+        return view('cruds.crudStudentsDestroy', ['dbData' => $this->getAllStudents()]);
     }
 
     public function groupTransfer(Request $request): Application|Factory|View|\Illuminate\Foundation\Application
     {
-        $student_id = null;
-        $group_id   = null;
-        $allData    = $request->all();
+        $allData = $request->all();
         if ( ! empty($allData)) {
-            $student_id = (int)$allData['studentId'];
-            $group_id   = $allData['groupId'];
+            StudentsWebManager::transferStudentByIdToGroupId(
+                (int)$allData['studentId'],
+                (int)$allData['groupId']
+            );
         }
 
-        return view(
-            'cruds.crudStudentsGroupTransfer',
-            [
-                'dbData' => StudentsWebManager::transferStudentByIdToGroupId($student_id, $group_id)
-            ]
-        );
+        return view('cruds.crudStudentsGroupTransfer', ['dbData' => $this->getAllStudents()]);
     }
 
     public function groupRemove(Request $request): Application|Factory|View|\Illuminate\Foundation\Application
     {
-        $studentId = null;
-        $allData   = $request->all();
+        $allData = $request->all();
         if ( ! empty($allData)) {
-            $studentId = $allData['studentId'];
+            StudentsWebManager::removeStudentByIdFromGroup((int)$allData['studentId']);
         }
 
-        return view(
-            'cruds.crudStudentsGroupRemove',
-            [
-                'dbData' => StudentsWebManager::removeStudentByIdFromGroup($studentId)
-            ]
-        );
+        return view('cruds.crudStudentsGroupRemove', ['dbData' => $this->getAllStudents()]);
     }
 
     public function courseAdding(Request $request): Application|Factory|View|\Illuminate\Foundation\Application
     {
-        $studentId = null;
-        $courseId  = null;
-        $allData   = $request->all();
+        $allData = $request->all();
         if ( ! empty($allData)) {
-            $studentId = (int)$allData['studentId'];
-            $courseId  = (int)$allData['courseId'];
+            StudentsWebManager::addStudentByIdToCourse(
+                (int)$allData['studentId'],
+                (int)$allData['courseId']
+            );
         }
 
-
-        return view(
-            'cruds.crudStudentsCourseAdding',
-            [
-                'dbData' => StudentsWebManager::addStudentByIdToCourse($studentId, $courseId)
-            ]
-        );
+        return view('cruds.crudStudentsCourseAdding', ['dbData' => $this->getAllStudents()]);
     }
 
     public function courseTransfer(Request $request): Application|Factory|View|\Illuminate\Foundation\Application
     {
-        $student_id   = null;
-        $courseFromId = null;
-        $courseToId   = null;
-        $allData      = $request->all();
+        $allData = $request->all();
         if ( ! empty($allData)) {
-            $student_id   = (int)$allData['studentId'];
-            $courseFromId = $allData['courseIdFrom'];
-            $courseToId   = $allData['courseIdTo'];
+            StudentsWebManager::transferStudentByIdFromCourseToCourse(
+                (int)$allData['studentId'],
+                (int)$allData['courseIdFrom'],
+                (int)$allData['courseIdTo']
+            );
         }
 
-        return view(
-            'cruds.crudStudentsCourseTransfer',
-            [
-                'dbData' => StudentsWebManager::transferStudentByIdFromCourseToCourse(
-                    $student_id,
-                    $courseFromId,
-                    $courseToId
-                )
-            ]
-        );
+        return view('cruds.crudStudentsCourseTransfer', ['dbData' => $this->getAllStudents()]);
     }
 
     public function courseRemove(Request $request): Application|Factory|View|\Illuminate\Foundation\Application
     {
-        $studentId = null;
-        $courseId  = null;
-        $allData   = $request->all();
+        $allData = $request->all();
         if ( ! empty($allData)) {
-            $studentId = $allData['studentId'];
-            $courseId  = $allData['courseId'];
+            StudentsWebManager::removeStudentByIdFromCourse(
+                (int)$allData['studentId'],
+                (int)$allData['courseId']
+            );
         }
 
-        return view(
-            'cruds.crudStudentsCourseRemove',
-            [
-                'dbData' => StudentsWebManager::removeStudentByIdFromCourse($studentId, $courseId)
-            ]
-        );
+        return view('cruds.crudStudentsCourseRemove', ['dbData' => $this->getAllStudents()]);
+    }
+
+    private function getAllStudents(): array
+    {
+        $students = DB::table('students')
+                      ->leftJoin('groups', 'students.group_id', '=', 'groups.id')
+                      ->select('students.id', 'students.first_name', 'students.last_name', 'groups.group_name')
+                      ->orderBy('students.id')
+                      ->get();
+
+        return $students->toArray();
     }
 }

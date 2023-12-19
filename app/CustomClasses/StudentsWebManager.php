@@ -8,22 +8,9 @@ use Illuminate\Support\Facades\DB;
 
 final class StudentsWebManager
 {
-    public static function getAllStudents(): array
-    {
-        $students = DB::table('students')
-                      ->leftJoin('groups', 'students.group_id', '=', 'groups.id')
-                      ->select('students.id', 'students.first_name', 'students.last_name', 'groups.group_name')
-                      ->orderBy('students.id')
-                      ->get();
 
-        return $students->toArray();
-    }
-
-    public static function getAllStudentsByGroupName(string|null $groupName): array
+    public static function getAllStudentsByGroupName(string $groupName): array
     {
-        if ( ! $groupName) {
-            return self::getAllStudents();
-        }
         $groupId  = self::getGroupIdByName($groupName);
         $students = DB::table('students')->
         leftJoin('groups', 'students.group_id', '=', 'groups.id')->
@@ -39,70 +26,44 @@ final class StudentsWebManager
         return $students->toArray();
     }
 
-    public static function createNewStudent(array $studentData): array
+    public static function createNewStudent(array $studentData): void
     {
-        if ( ! empty($studentData)) {
-            $firstName = $studentData['first_name'];
-            $lastName  = $studentData['last_name'];
-            $groupId   = (int)$studentData['group_id'];
-            $groupName = self::getGroupNameById($groupId);
-            DB::table('students')
-              ->insert([
-                  'first_name' => $firstName,
-                  'last_name'  => $lastName,
-                  'group_id'   => $groupId,
-                  'created_at' => date("Y-m-d H:i:s"),
-                  'updated_at' => date("Y-m-d H:i:s"),
-              ]);
-            $studentsList = self::getAllStudentsByGroupName($groupName);
-        } else {
-            $studentsList = self::getAllStudents();
-        }
-
-        return $studentsList;
+        $firstName = $studentData['first_name'];
+        $lastName  = $studentData['last_name'];
+        $groupId   = (int)$studentData['group_id'];
+        $groupName = self::getGroupNameById($groupId);
+        DB::table('students')
+          ->insert([
+              'first_name' => $firstName,
+              'last_name'  => $lastName,
+              'group_id'   => $groupId,
+              'created_at' => date("Y-m-d H:i:s"),
+              'updated_at' => date("Y-m-d H:i:s"),
+          ]);
     }
 
-    public static function deleteStudentById(int|null $studentId): array
+    public static function deleteStudentById(int $studentId): void
     {
-        if ( ! $studentId) {
-            return self::getAllStudents();
-        }
         DB::table('students')->delete($studentId);
-
-        return self::getAllStudents();
     }
 
-    public static function transferStudentByIdToGroupId(int|null $studentId, int|null $groupId): array
+    public static function transferStudentByIdToGroupId(int $studentId, int $groupId): void
     {
-        if (is_null($studentId) || is_null($groupId)) {
-            return self::getAllStudents();
-        }
         DB::table('students')
           ->where('id', $studentId)
           ->update(['group_id' => $groupId]);
-        $groupName = self::getGroupNameById($groupId);
-
-        return self::getAllStudentsByGroupName($groupName);
     }
 
-    public static function removeStudentByIdFromGroup(int|null $studentId): array
+    public static function removeStudentByIdFromGroup(int $studentId): void
     {
-        if (is_null($studentId)) {
-            return self::getAllStudents();
-        }
         $freeGroupId = self::getGroupIdByName('free');
         DB::table('students')
           ->where('id', $studentId)
           ->update(['group_id' => $freeGroupId]);
-
-        return self::getAllStudentsByGroupName('free');
     }
 
-    public static function addStudentByIdToCourse(int|null $studentId, int|null $courseId): array
+    public static function addStudentByIdToCourse(int $studentId, int $courseId): void
     {
-        if (is_null($studentId) || is_null($courseId)) {
-            return self::getAllStudents();
-        }
         $sql   = DB::table('students_courses')
                    ->where('student_id', $studentId)
                    ->where('course_id', $courseId)
@@ -115,18 +76,13 @@ final class StudentsWebManager
                   'course_id'  => $courseId
               ]);
         }
-
-        return self::getAllStudents();
     }
 
     public static function transferStudentByIdFromCourseToCourse(
-        int|null $studentId,
-        int|null $courseIdFrom,
-        int|null $courseIdTo
-    ): array {
-        if (is_null($studentId) || is_null($courseIdFrom) || is_null($courseIdTo)) {
-            return self::getAllStudents();
-        }
+        int $studentId,
+        int $courseIdFrom,
+        int $courseIdTo
+    ): void {
         $sql = DB::table('students_courses')
                  ->where('student_id', $studentId)
                  ->where('course_id', $courseIdFrom)
@@ -135,25 +91,18 @@ final class StudentsWebManager
         DB::table('students_courses')
           ->where('id', $sql[0]->id)
           ->update(['course_id' => $courseIdTo]);
-
-        return self::getAllStudents();
     }
 
     public static function removeStudentByIdFromCourse(
-        int|null $studentId,
-        int|null $courseId,
-    ): array {
-        if (is_null($studentId) || is_null($courseId)) {
-            return self::getAllStudents();
-        }
+        int $studentId,
+        int $courseId,
+    ): void {
         $sql = DB::table('students_courses')
                  ->where('student_id', $studentId)
                  ->where('course_id', $courseId)
                  ->get('id');
 
         DB::table('students_courses')->where('id', $sql[0]->id)->delete();
-
-        return self::getAllStudents();
     }
 
 // -----------
