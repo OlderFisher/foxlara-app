@@ -9,27 +9,21 @@ class StudentsApiManager
 {
     public static function getApiStudentsList(): string
     {
-        $response = self::apiCall('api/v1/students', 'GET', [], [], [], [], null);
+        $response = self::apiCall('api/v1/students');
 
         return json_decode($response->getStatusCode());
     }
 
     public static function getApiStudentsListByGroupName(string $groupName): string
     {
-        $response = self::apiCall('api/v1/students?groupName=' . $groupName, 'GET', [], [], [], [], null);
+        $response = self::apiCall('api/v1/students?groupName=' . $groupName);
 
         return json_decode($response->getStatusCode());
     }
 
     public static function createNewStudent(array $studentData): string
     {
-        $params['body'] = $studentData;
-        $request        = Request::create(
-            "api/v1/students",
-            "POST",
-            $params
-        );
-        $response       = Route::dispatch($request);
+        $response = self::apiCall('api/v1/students', 'POST', $studentData);
 
         return json_decode($response->getStatusCode());
     }
@@ -51,20 +45,13 @@ class StudentsApiManager
         string $url,
         string $method = 'GET',
         array $parameters = [],
-        array $cookies = [],
-        array $files = [],
-        array $server = [],
-        $content
     ): \Symfony\Component\HttpFoundation\Response {
         $request = Request::create(
             $url,
             $method,
             $parameters,
-            $cookies,
-            $files,
-            $server,
-            $content
         );
+        
 
         return Route::dispatch($request);
     }

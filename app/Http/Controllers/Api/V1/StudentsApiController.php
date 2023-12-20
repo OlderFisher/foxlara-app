@@ -110,8 +110,6 @@ class StudentsApiController extends Controller
     public function destroy(Request $request): Response
     {
         $allData = $request->all();
-
-        dd($allData);
         if ( ! empty($allData)) {
             StudentsManager::deleteStudentById((int)$allData['studentId']);
         }
@@ -190,7 +188,7 @@ class StudentsApiController extends Controller
      */
     public function store(Request $request): Response
     {
-        dd($request);
+        dd($request->post());
         $allData   = $request->all();
         $firstName = $allData['first_name'];
         $lastName  = $allData['last_name'];
