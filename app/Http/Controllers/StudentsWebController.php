@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\CustomClasses\StudentsWebManager;
+use App\CustomClasses\StudentsManager;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
@@ -27,7 +27,7 @@ class StudentsWebController extends Controller
         if ( ! $groupName) {
             $studentsList = $this->getAllStudents();
         } else {
-            $studentsList = StudentsWebManager::getAllStudentsByGroupName($groupName);
+            $studentsList = StudentsManager::getAllStudentsByGroupName($groupName);
         }
 
         return view('cruds.crudStudentsGroups', ['dbData' => $studentsList]);
@@ -37,7 +37,7 @@ class StudentsWebController extends Controller
     {
         $allData = $request->all();
         if ( ! empty($allData)) {
-            StudentsWebManager::createNewStudent($allData);
+            StudentsManager::createNewStudent($allData);
         }
 
         return view('cruds.crudStudentsCreate', ['dbData' => $this->getAllStudents()]);
@@ -48,7 +48,7 @@ class StudentsWebController extends Controller
         $allData = $request->all();
 
         if ( ! empty($allData) && isset($allData['studentId'])) {
-            StudentsWebManager::deleteStudentById((int)$allData['studentId']);
+            StudentsManager::deleteStudentById((int)$allData['studentId']);
         }
 
         return view('cruds.crudStudentsDestroy', ['dbData' => $this->getAllStudents()]);
@@ -58,7 +58,7 @@ class StudentsWebController extends Controller
     {
         $allData = $request->all();
         if ( ! empty($allData)) {
-            StudentsWebManager::transferStudentByIdToGroupId(
+            StudentsManager::transferStudentByIdToGroupId(
                 (int)$allData['studentId'],
                 (int)$allData['groupId']
             );
@@ -71,7 +71,7 @@ class StudentsWebController extends Controller
     {
         $allData = $request->all();
         if ( ! empty($allData)) {
-            StudentsWebManager::removeStudentByIdFromGroup((int)$allData['studentId']);
+            StudentsManager::removeStudentByIdFromGroup((int)$allData['studentId']);
         }
 
         return view('cruds.crudStudentsGroupRemove', ['dbData' => $this->getAllStudents()]);
@@ -81,7 +81,7 @@ class StudentsWebController extends Controller
     {
         $allData = $request->all();
         if ( ! empty($allData)) {
-            StudentsWebManager::addStudentByIdToCourse(
+            StudentsManager::addStudentByIdToCourse(
                 (int)$allData['studentId'],
                 (int)$allData['courseId']
             );
@@ -94,7 +94,7 @@ class StudentsWebController extends Controller
     {
         $allData = $request->all();
         if ( ! empty($allData)) {
-            StudentsWebManager::transferStudentByIdFromCourseToCourse(
+            StudentsManager::transferStudentByIdFromCourseToCourse(
                 (int)$allData['studentId'],
                 (int)$allData['courseIdFrom'],
                 (int)$allData['courseIdTo']
@@ -108,7 +108,7 @@ class StudentsWebController extends Controller
     {
         $allData = $request->all();
         if ( ! empty($allData)) {
-            StudentsWebManager::removeStudentByIdFromCourse(
+            StudentsManager::removeStudentByIdFromCourse(
                 (int)$allData['studentId'],
                 (int)$allData['courseId']
             );

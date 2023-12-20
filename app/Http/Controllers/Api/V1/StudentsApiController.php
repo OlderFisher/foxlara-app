@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\CustomClasses\StudentsManager;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Route;
 use OpenApi\Annotations as OA;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -20,7 +20,7 @@ use Symfony\Component\HttpFoundation\Response;
  *   )
  * )
  */
-class StudentsController extends Controller
+class StudentsApiController extends Controller
 {
     /**
      * @OA\Get(
@@ -60,28 +60,14 @@ class StudentsController extends Controller
      */
     public function index(Request $request): Response
     {
-        $groupName = $request->get('group_name');
-        if ($groupName && strlen($groupName) >= 4) {
-            $groupId = DB::table('groups')->where('group_name', $groupName)->get('id');
-            $students = DB::table('students')->
-            leftJoin('groups', 'students.group_id', '=', 'groups.id')->
-            where('students.group_id', $groupId[0]->id)->
-            select(
-                'students.id',
-                'students.first_name',
-                'students.last_name',
-                'students.group_id',
-                'groups.group_name'
-            )->orderBy('students.id')->get();
+        $groupName = $request->get('groupName');
+        if ($groupName) {
+            $studentsList = StudentsManager::getAllStudentsByGroupName($groupName);
         } else {
-            $students = DB::table('students')->
-            leftJoin('groups', 'students.group_id', '=', 'groups.id')->
-            select('students.id', 'students.first_name', 'students.last_name', 'groups.group_name')->
-            orderBy('students.id')->
-            get();
+            $studentsList = $this->getAllStudents();
         }
 
-        return response()->json($students, 200, [], 0);
+        return response()->json($studentsList, 200, [], 0);
     }
 
     /**
@@ -124,15 +110,21 @@ class StudentsController extends Controller
     public function destroy(Request $request): Response
     {
         $allData = $request->all();
-        $id = (int)$allData['studentId'];
 
-        $count = DB::table('students')->delete($id);
-
-        $statusCode = 200;
-        if ($count == 0) {
+        dd($allData);
+        if ( ! empty($allData)) {
+            StudentsManager::deleteStudentById((int)$allData['studentId']);
+        }
+        // check for deleting success
+        $count = DB::table('students')->where('id', (int)$allData['studentId'])->get();
+        if (empty($count)) {
+            $statusCode = 200;
+        } else {
             $statusCode = 400;
         }
+
         $studentsList = json_decode($this->getAllStudents());
+
         return response()->json($studentsList, $statusCode, [], 0);
     }
 
@@ -198,26 +190,29 @@ class StudentsController extends Controller
      */
     public function store(Request $request): Response
     {
-        $allData = $request->all();
+        dd($request);
+        $allData   = $request->all();
         $firstName = $allData['first_name'];
-        $lastName = $allData['last_name'];
+        $lastName  = $allData['last_name'];
         $groupName = $allData['group_name'];
+
         $groupId = $this->getGroupIdByGroupName($groupName);
 
         $count = DB::table('students')->insert([
             'first_name' => $firstName,
-            'last_name' => $lastName,
-            'group_id' => $groupId,
+            'last_name'  => $lastName,
+            'group_id'   => $groupId,
             'created_at' => date("Y-m-d H:i:s"),
             'updated_at' => date("Y-m-d H:i:s"),
         ]);
 
-        if (!$count) {
+        if ( ! $count) {
             $statusCode = 500;
         } else {
             $statusCode = 200;
         }
         $studentsList = json_decode($this->getAllStudents());
+
         return response()->json($studentsList, $statusCode, [], 0);
     }
 
@@ -273,9 +268,9 @@ class StudentsController extends Controller
      */
     public function update(Request $request): Response
     {
-        $allData = $request->all();
+        $allData    = $request->all();
         $student_id = (int)$allData['studentId'];
-        $group_id = $allData['groupId'];
+        $group_id   = $allData['groupId'];
 
         $count = DB::table('students')->where('id', $student_id)->update(['group_id' => $group_id]);
 
@@ -284,6 +279,7 @@ class StudentsController extends Controller
             $statusCode = 400;
         }
         $studentsList = json_decode($this->getAllStudents());
+
         return response()->json($studentsList, $statusCode, []);
     }
 
@@ -325,9 +321,9 @@ class StudentsController extends Controller
      */
     public function remove(Request $request): Response
     {
-        $allData = $request->all();
+        $allData    = $request->all();
         $student_id = (int)$allData['studentId'];
-        $group_id = $this->getGroupIdByGroupName('free');
+        $group_id   = $this->getGroupIdByGroupName('free');
 
         $count = DB::table('students')->where('id', $student_id)->update(['group_id' => $group_id]);
 
@@ -336,6 +332,7 @@ class StudentsController extends Controller
             $statusCode = 400;
         }
         $studentsList = json_decode($this->getAllStudents());
+
         return response()->json($studentsList, $statusCode, []);
     }
 
@@ -343,22 +340,28 @@ class StudentsController extends Controller
      * Function to get all  students list
      * @return string
      */
-    private function getAllStudents(): string
+    private function getAllStudents(): array
     {
-        $request = Request::create('api/v1/students', 'GET');
-        $response = Route::dispatch($request);
+        $students = DB::table('students')
+                      ->leftJoin('groups', 'students.group_id', '=', 'groups.id')
+                      ->select('students.id', 'students.first_name', 'students.last_name', 'groups.group_name')
+                      ->orderBy('students.id')
+                      ->get();
 
-        return $response->getContent();
+        return $students->toArray();
     }
 
     /**
      * Function to find group id by group name
+     *
      * @param  string  $groupName
+     *
      * @return int
      */
     private function getGroupIdByGroupName(string $groupName): int
     {
         $sql = DB::table('groups')->where('group_name', $groupName)->get('id');
+
         return (int)$sql[0]->id;
     }
 

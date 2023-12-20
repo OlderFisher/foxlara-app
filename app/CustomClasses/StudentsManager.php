@@ -6,7 +6,7 @@ namespace App\CustomClasses;
 
 use Illuminate\Support\Facades\DB;
 
-final class StudentsWebManager
+final class StudentsManager
 {
 
     public static function getAllStudentsByGroupName(string $groupName): array

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CrudApiController;
 use App\Http\Controllers\CrudStructureController;
 use App\Http\Controllers\DbStructureController;
 use App\Http\Controllers\DriverController;
@@ -51,5 +52,7 @@ Route::prefix('web/students/courses')->group(function () {
     Route::get('/remove', [StudentsWebController::class, 'courseRemove']);
     Route::post('/remove', [StudentsWebController::class, 'courseRemove']);
 });
+
+Route::get('crudapi', [CrudApiController::class, 'index']);
 
 
