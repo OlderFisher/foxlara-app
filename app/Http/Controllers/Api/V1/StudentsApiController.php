@@ -398,12 +398,11 @@ class StudentsApiController extends Controller
                 $courseId = $requestUriArray[$i + 1];
             }
         }
-        $sql   = DB::table('students_courses')
-                   ->where('student_id', $studentId)
-                   ->where('course_id', $courseId)
-                   ->get('id');
-        $count = $sql->toArray();
-        if (empty($count)) {
+        $sql = DB::table('students_courses')
+                 ->where('student_id', $studentId)
+                 ->where('course_id', $courseId)
+                 ->get('id');
+        if ($sql->isEmpty()) {
             DB::table('students_courses')
               ->insert([
                   'student_id' => $studentId,
@@ -478,10 +477,13 @@ class StudentsApiController extends Controller
             }
         }
         $sql = DB::table('students_courses')
-                 ->where('student_id', $studentId)
-                 ->where('course_id', $courseId)
+                 ->where('student_id', (int)$studentId)
+                 ->where('course_id', (int)$courseId)
                  ->get('id');
 
+        if ($sql->isEmpty()) {
+            return response()->json('ERROR', 500, []);
+        }
         DB::table('students_courses')->where('id', $sql[0]->id)->delete();
 
         return response()->json($this->getAllStudents(), 200, []);
