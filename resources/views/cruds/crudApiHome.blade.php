@@ -43,23 +43,23 @@
                 <p>API GET route <span class="text-blue-500">localhost:5000/api/v1/students?groupName=QK-21</span></p>
                 <p>Response : {{\App\CustomClasses\StudentsApiManager::getApiStudentsListByGroupName('QK-21')}}</p>
             </div>
-            <div class="api-div mb-2">
-                <p>API Request Create New Student.</p>
-                <p>API POST route <span class="text-blue-500">localhost:5000/api/v1/students</span></p>
-                <?php
-                $studentData = [
-                    'first_name' => 'Alex',
-                    'last_name'  => 'Baldwin',
-                    'group_name' => 'QK-21'
-                ]
-                ?>
-                <p>Response : {{\App\CustomClasses\StudentsApiManager::createNewStudent($studentData)}}</p>
-            </div>
-            <div class="api-div mb-2">
-                <p>API Request Delete Student By Id.</p>
-                <p>API POST route <span class="text-blue-500">localhost:5000/api/v1/students/{studentId}</span></p>
-                <p>Response : {{\App\CustomClasses\StudentsApiManager::deleteStudentById(204)}}</p>
-            </div>
+            {{--            <div class="api-div mb-2">--}}
+            {{--                <p>API Request Create New Student.</p>--}}
+            {{--                <p>API POST route <span class="text-blue-500">localhost:5000/api/v1/students</span></p>--}}
+            {{--                <?php--}}
+            {{--                $studentData = [--}}
+            {{--                    'first_name' => 'Alex',--}}
+            {{--                    'last_name'  => 'Baldwin',--}}
+            {{--                    'group_id'   => 3--}}
+            {{--                ]--}}
+            {{--                ?>--}}
+            {{--                <p>Response : {{\App\CustomClasses\StudentsApiManager::createNewStudent($studentData)}}</p>--}}
+            {{--            </div>--}}
+            {{--            <div class="api-div mb-2">--}}
+            {{--                <p>API Request Delete Student By Id.</p>--}}
+            {{--                <p>API POST route <span class="text-blue-500">localhost:5000/api/v1/students/{studentId}</span></p>--}}
+            {{--                <p>Response : {{\App\CustomClasses\StudentsApiManager::deleteStudentById(204)}}</p>--}}
+            {{--            </div>--}}
 
 
         </div>

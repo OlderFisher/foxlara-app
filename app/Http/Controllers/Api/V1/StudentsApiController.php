@@ -71,7 +71,7 @@ class StudentsApiController extends Controller
     }
 
     /**
-     * @OA\Post(
+     * @OA\Delete(
      *     path="api/v1/students/{studentId}",
      *     summary="Delete student by studentId",
      *     @OA\Parameter(
@@ -109,21 +109,20 @@ class StudentsApiController extends Controller
 
     public function destroy(Request $request): Response
     {
-        $allData = $request->all();
-        if ( ! empty($allData)) {
-            StudentsManager::deleteStudentById((int)$allData['studentId']);
+        $requestUri = $request->getRequestUri();
+        $studentId  = str_replace('/api/v1/students/', '', $requestUri);
+        if (strlen($studentId) >= 1) {
+            StudentsManager::deleteStudentById((int)$studentId);
         }
         // check for deleting success
-        $count = DB::table('students')->where('id', (int)$allData['studentId'])->get();
+        $count = DB::table('students')->where('id', (int)$studentId)->get();
         if (empty($count)) {
             $statusCode = 200;
         } else {
             $statusCode = 400;
         }
 
-        $studentsList = json_decode($this->getAllStudents());
-
-        return response()->json($studentsList, $statusCode, [], 0);
+        return response()->json($this->getAllStudents(), $statusCode, [], 0);
     }
 
     /**
@@ -188,34 +187,26 @@ class StudentsApiController extends Controller
      */
     public function store(Request $request): Response
     {
-        dd($request->post());
-        $allData   = $request->all();
-        $firstName = $allData['first_name'];
-        $lastName  = $allData['last_name'];
-        $groupName = $allData['group_name'];
-
-        $groupId = $this->getGroupIdByGroupName($groupName);
-
-        $count = DB::table('students')->insert([
-            'first_name' => $firstName,
-            'last_name'  => $lastName,
-            'group_id'   => $groupId,
+        $allData = $request->post();
+        $count   = DB::table('students')->insert([
+            'first_name' => $allData['first_name'],
+            'last_name'  => $allData['last_name'],
+            'group_id'   => $allData['group_id'],
             'created_at' => date("Y-m-d H:i:s"),
             'updated_at' => date("Y-m-d H:i:s"),
         ]);
 
-        if ( ! $count) {
-            $statusCode = 500;
-        } else {
+        if ($count) {
             $statusCode = 200;
+        } else {
+            $statusCode = 500;
         }
-        $studentsList = json_decode($this->getAllStudents());
 
-        return response()->json($studentsList, $statusCode, [], 0);
+        return response()->json($this->getAllStudents(), $statusCode, [], 0);
     }
 
     /**
-     * @OA\Post(
+     * @OA\Put(
      *     path="api/v1/students/{studentId}/groups/{groupId}",
      *     summary="Transfer student with studentId to group with groupId",
      *     @OA\Parameter(
@@ -266,9 +257,16 @@ class StudentsApiController extends Controller
      */
     public function update(Request $request): Response
     {
-        $allData    = $request->all();
-        $student_id = (int)$allData['studentId'];
-        $group_id   = $allData['groupId'];
+        $requestUri      = $request->getRequestUri();
+        $requestUriArray = explode('/', $requestUri);
+        for ($i = 0; $i < count($requestUriArray); $i++) {
+            if ($requestUriArray[$i] === 'students') {
+                $student_id = $requestUriArray[$i + 1];
+            }
+            if ($requestUriArray[$i] === 'groups') {
+                $group_id = $requestUriArray[$i + 1];
+            }
+        }
 
         $count = DB::table('students')->where('id', $student_id)->update(['group_id' => $group_id]);
 
@@ -276,13 +274,12 @@ class StudentsApiController extends Controller
         if ($count == 0) {
             $statusCode = 400;
         }
-        $studentsList = json_decode($this->getAllStudents());
 
-        return response()->json($studentsList, $statusCode, []);
+        return response()->json($this->getAllStudents(), $statusCode, []);
     }
 
     /**
-     * @OA\Post(
+     * @OA\Put(
      *     path="api/v1/groups/{groupId}/students/{studentId}",
      *     summary="Remove student from current group ( transfer to free )",
      *     @OA\Parameter(
@@ -319,9 +316,14 @@ class StudentsApiController extends Controller
      */
     public function remove(Request $request): Response
     {
-        $allData    = $request->all();
-        $student_id = (int)$allData['studentId'];
-        $group_id   = $this->getGroupIdByGroupName('free');
+        $requestUri      = $request->getRequestUri();
+        $requestUriArray = explode('/', $requestUri);
+        for ($i = 0; $i < count($requestUriArray); $i++) {
+            if ($requestUriArray[$i] === 'students') {
+                $student_id = $requestUriArray[$i + 1];
+            }
+        }
+        $group_id = $this->getGroupIdByGroupName('free');
 
         $count = DB::table('students')->where('id', $student_id)->update(['group_id' => $group_id]);
 
@@ -329,9 +331,160 @@ class StudentsApiController extends Controller
         if ($count == 0) {
             $statusCode = 400;
         }
-        $studentsList = json_decode($this->getAllStudents());
 
-        return response()->json($studentsList, $statusCode, []);
+        return response()->json($this->getAllStudents(), $statusCode, []);
+    }
+
+    /**
+     * @OA\Put(
+     *     path="api/v1/{studentId}/add/courses/{courseId}",
+     *     summary="Add student with studentId to course with courseId",
+     *     @OA\Parameter(
+     *         name="studentId",
+     *         in="params",
+     *         description="Student id",
+     *         required=true,
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Parameter(
+     *          name="groupId",
+     *          in="params",
+     *          description="Group id",
+     *          required=true,
+     *          @OA\Schema(type="string")
+     *      ),
+     *
+     *     @OA\Response(
+     *      response="200",
+     *      description="Students list  json data return. Response object = { {parameters} ....}.)",
+     *      @OA\MediaType(
+     *          mediaType="application/json",
+     *          @OA\Schema(
+     *              type="object",
+     *              @OA\AdditionalProperties(
+     *                  ref="#/components/schemas/Students"
+     *              ),
+     *          )
+     *      ),
+     *     ),
+     * )
+     * @OA\Schema(
+     *      schema="Students",
+     *      type="object",
+     *
+     *      @OA\Property(
+     *        property="studentId",
+     *        type="string",
+     *        example="21"
+     *      ),
+     *     @OA\Property(
+     *         property="courseId",
+     *         type="string",
+     *         example="4"
+     *       ),
+     *
+     *    )
+     */
+    public function courseAdding(Request $request): Response
+    {
+        $requestUri      = $request->getRequestUri();
+        $requestUriArray = explode('/', $requestUri);
+
+        for ($i = 0; $i < count($requestUriArray); $i++) {
+            if ($requestUriArray[$i] === 'students') {
+                $studentId = $requestUriArray[$i + 1];
+            }
+            if ($requestUriArray[$i] === 'courses') {
+                $courseId = $requestUriArray[$i + 1];
+            }
+        }
+        $sql   = DB::table('students_courses')
+                   ->where('student_id', $studentId)
+                   ->where('course_id', $courseId)
+                   ->get('id');
+        $count = $sql->toArray();
+        if (empty($count)) {
+            DB::table('students_courses')
+              ->insert([
+                  'student_id' => $studentId,
+                  'course_id'  => $courseId
+              ]);
+        }
+
+        return response()->json($this->getAllStudents(), 200, []);
+    }
+
+    /**
+     * @OA\Put(
+     *     path="api/v1/{studentId}/remove/courses/{courseId}",
+     *     summary="Remove student with studentId to course with courseId",
+     *     @OA\Parameter(
+     *         name="studentId",
+     *         in="params",
+     *         description="Student id",
+     *         required=true,
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Parameter(
+     *          name="groupId",
+     *          in="params",
+     *          description="Group id",
+     *          required=true,
+     *          @OA\Schema(type="string")
+     *      ),
+     *
+     *     @OA\Response(
+     *      response="200",
+     *      description="Students list  json data return. Response object = { {parameters} ....}.)",
+     *      @OA\MediaType(
+     *          mediaType="application/json",
+     *          @OA\Schema(
+     *              type="object",
+     *              @OA\AdditionalProperties(
+     *                  ref="#/components/schemas/Students"
+     *              ),
+     *          )
+     *      ),
+     *     ),
+     * )
+     * @OA\Schema(
+     *      schema="Students",
+     *      type="object",
+     *
+     *      @OA\Property(
+     *        property="studentId",
+     *        type="string",
+     *        example="21"
+     *      ),
+     *     @OA\Property(
+     *         property="courseId",
+     *         type="string",
+     *         example="4"
+     *       ),
+     *
+     *    )
+     */
+    public function courseRemove(Request $request): Response
+    {
+        $requestUri      = $request->getRequestUri();
+        $requestUriArray = explode('/', $requestUri);
+
+        for ($i = 0; $i < count($requestUriArray); $i++) {
+            if ($requestUriArray[$i] === 'students') {
+                $studentId = $requestUriArray[$i + 1];
+            }
+            if ($requestUriArray[$i] === 'courses') {
+                $courseId = $requestUriArray[$i + 1];
+            }
+        }
+        $sql = DB::table('students_courses')
+                 ->where('student_id', $studentId)
+                 ->where('course_id', $courseId)
+                 ->get('id');
+
+        DB::table('students_courses')->where('id', $sql[0]->id)->delete();
+
+        return response()->json($this->getAllStudents(), 200, []);
     }
 
     /**

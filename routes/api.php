@@ -26,9 +26,9 @@ Route::get('/v1/groups', [GroupsController::class, 'index']);
 Route::prefix('/v1/students',)->group(function () {
     Route::get('/', [StudentsApiController::class, 'index']);
     Route::post('/', [StudentsApiController::class, 'store']);
-    Route::post('/{studentId}', [StudentsApiController::class, 'destroy']);
+    Route::delete('/{studentId}', [StudentsApiController::class, 'destroy']);
     Route::put('/{studentId}/groups/{groupId}', [StudentsApiController::class, 'update']);
+    Route::put('/{studentId}/add/courses/{courseId}', [StudentsApiController::class, 'courseAdding']);
+    Route::put('/{studentId}/remove/courses/{courseId}', [StudentsApiController::class, 'courseRemove']);
 });
-
-
-Route::post('/v1/groups/{groupId}/students/{studentId}', [StudentsApiController::class, 'remove']);
+Route::put('/v1/groups/students/{studentId}', [StudentsApiController::class, 'remove']);

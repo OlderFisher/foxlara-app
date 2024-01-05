@@ -51,7 +51,7 @@ class StudentsApiManager
             $method,
             $parameters,
         );
-        
+
 
         return Route::dispatch($request);
     }
