@@ -13,11 +13,11 @@ class DbReportTest extends TestCase
      */
     public function testDbReportJson(): void
     {
-        $monacoRace = new MonacoReport();
-        $raceFilesReport = $monacoRace->buildRaceReport('race_time');
+        $monacoRace          = new MonacoReport();
+        $raceFilesReport     = $monacoRace->buildRaceReport('race_time');
         $raceFilesReportJson = json_encode($raceFilesReport);
 
-        $raceDbReport = ReportDb::Report();
+        $raceDbReport     = ReportDb::scopeReport();
         $raceDbReportJson = json_encode($raceDbReport);
 
         $this->assertJsonStringEqualsJsonString($raceFilesReportJson, $raceDbReportJson);

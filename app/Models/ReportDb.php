@@ -10,9 +10,9 @@ class ReportDb extends Model
 {
     use HasFactory;
 
-    public function scopeReport(): array
+    public static function scopeReport(): array
     {
-        $pilots = DB::select(
+        $pilots     = DB::select(
             'SELECT * FROM pilots 
                     INNER JOIN teams ON pilots.pilot_team_id=teams.id
                     INNER JOIN results ON results.pilot_id=pilots.id
@@ -24,8 +24,8 @@ class ReportDb extends Model
                 'pilot_name' => $pilot->pilot_name,
                 'pilot_team' => $pilot->team_name,
                 'start_time' => $pilot->start_time,
-                'end_time' => $pilot->end_time,
-                'race_time' => $pilot->race_time
+                'end_time'   => $pilot->end_time,
+                'race_time'  => $pilot->race_time
             ];
         }
 

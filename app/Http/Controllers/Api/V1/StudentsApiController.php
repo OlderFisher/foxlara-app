@@ -107,7 +107,7 @@ class StudentsApiController extends Controller
      *    )
      */
 
-    public function destroy(Request $request, $studentId): Response
+    public function destroy($studentId): Response
     {
         DB::table('students')->delete($studentId);
         // check for deleting success

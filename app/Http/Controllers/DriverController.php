@@ -10,7 +10,7 @@ class DriverController extends Controller
 {
     public function index(Request $request): View
     {
-        $order= $request->order;
+        $order    = $request->order;
         $driverId = $request->driver_id;
 
         $monacoRace = new MonacoReport();
@@ -19,13 +19,13 @@ class DriverController extends Controller
             $raceReport = $monacoRace->buildRaceReport('pilot_name', SORT_DESC);
         }
 
-        // If request has single driver Id
+        // If request has single driverId
         if (is_string($driverId) && strlen($driverId) == 3) {
-            $pilotData = array_filter($raceReport, function($key) use ($driverId) {
+            $pilotData = array_filter($raceReport, function ($key) use ($driverId) {
                 return ($key == $driverId);
             }, ARRAY_FILTER_USE_KEY);
 
-           $raceReport = $pilotData;
+            $raceReport = $pilotData;
         }
 
         return view('reports.drivers', [

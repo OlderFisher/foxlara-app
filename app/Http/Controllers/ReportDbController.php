@@ -9,11 +9,11 @@ class ReportDbController extends Controller
 {
     public function index(): View
     {
-        $raceReport = ReportDb::Report();
+        $raceReport = ReportDb::scopeReport();
 
         return view('reports.dbreport', [
             'reportData' => $raceReport,
-            'topPilots' => array_slice($raceReport, 0, 15),
+            'topPilots'  => array_slice($raceReport, 0, 15),
             'slowPilots' => array_slice($raceReport, 15, count($raceReport))
         ]);
     }

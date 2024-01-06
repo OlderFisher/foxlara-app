@@ -23,13 +23,13 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::get('/v1/report', [ReportController::class, 'index']);
 Route::get('/v1/groups', [GroupsController::class, 'index']);
 
-Route::prefix('/v1/students',)->group(function () {
+Route::prefix('/v1/students')->group(function () {
     Route::get('/', [StudentsApiController::class, 'index']);
     Route::post('/', [StudentsApiController::class, 'store']);
     Route::delete('/{studentId}', function (Request $request, string $studentId) {
         $controller = new StudentsApiController();
 
-        return $controller->destroy($request, $studentId);
+        return $controller->destroy($studentId);
     });
     Route::put('/{studentId}/groups/{groupId}', function (Request $request, string $studentId, string $groupId) {
         $controller = new StudentsApiController();
