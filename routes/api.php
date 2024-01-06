@@ -26,9 +26,32 @@ Route::get('/v1/groups', [GroupsController::class, 'index']);
 Route::prefix('/v1/students',)->group(function () {
     Route::get('/', [StudentsApiController::class, 'index']);
     Route::post('/', [StudentsApiController::class, 'store']);
-    Route::delete('/{studentId}', [StudentsApiController::class, 'destroy']);
-    Route::put('/{studentId}/groups/{groupId}', [StudentsApiController::class, 'update']);
-    Route::put('/{studentId}/add/courses/{courseId}', [StudentsApiController::class, 'courseAdding']);
-    Route::put('/{studentId}/remove/courses/{courseId}', [StudentsApiController::class, 'courseRemove']);
+    Route::delete('/{studentId}', function (Request $request, string $studentId) {
+        $controller = new StudentsApiController();
+
+        return $controller->destroy($request, $studentId);
+    });
+    Route::put('/{studentId}/groups/{groupId}', function (Request $request, string $studentId, string $groupId) {
+        $controller = new StudentsApiController();
+
+        return $controller->update($request, $studentId, $groupId);
+    });
+    Route::put('/{studentId}/add/courses/{courseId}', function (Request $request, string $studentId, string $courseId) {
+        $controller = new StudentsApiController();
+
+        return $controller->courseAdding($request, $studentId, $courseId);
+    });
+    Route::put(
+        '/{studentId}/remove/courses/{courseId}',
+        function (Request $request, string $studentId, string $courseId) {
+            $controller = new StudentsApiController();
+
+            return $controller->courseRemove($request, $studentId, $courseId);
+        }
+    );
 });
-Route::put('/v1/groups/students/{studentId}', [StudentsApiController::class, 'remove']);
+Route::put('/v1/groups/students/{studentId}', function (Request $request, string $studentId) {
+    $controller = new StudentsApiController();
+
+    return $controller->remove($request, $studentId);
+});

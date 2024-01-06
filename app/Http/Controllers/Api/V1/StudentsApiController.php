@@ -107,13 +107,9 @@ class StudentsApiController extends Controller
      *    )
      */
 
-    public function destroy(Request $request): Response
+    public function destroy(Request $request, $studentId): Response
     {
-        $requestUri = $request->getRequestUri();
-        $studentId  = str_replace('/api/v1/students/', '', $requestUri);
-        if (strlen($studentId) >= 1) {
-            StudentsManager::deleteStudentById((int)$studentId);
-        }
+        DB::table('students')->delete($studentId);
         // check for deleting success
         $count = DB::table('students')->where('id', (int)$studentId)->get();
         if (empty($count)) {
@@ -255,19 +251,8 @@ class StudentsApiController extends Controller
      *
      *    )
      */
-    public function update(Request $request): Response
+    public function update(Request $request, $student_id, $group_id): Response
     {
-        $requestUri      = $request->getRequestUri();
-        $requestUriArray = explode('/', $requestUri);
-        for ($i = 0; $i < count($requestUriArray); $i++) {
-            if ($requestUriArray[$i] === 'students') {
-                $student_id = $requestUriArray[$i + 1];
-            }
-            if ($requestUriArray[$i] === 'groups') {
-                $group_id = $requestUriArray[$i + 1];
-            }
-        }
-
         $count = DB::table('students')->where('id', $student_id)->update(['group_id' => $group_id]);
 
         $statusCode = 200;
@@ -314,15 +299,8 @@ class StudentsApiController extends Controller
      *      ),
      *    )
      */
-    public function remove(Request $request): Response
+    public function remove(Request $request, $student_id): Response
     {
-        $requestUri      = $request->getRequestUri();
-        $requestUriArray = explode('/', $requestUri);
-        for ($i = 0; $i < count($requestUriArray); $i++) {
-            if ($requestUriArray[$i] === 'students') {
-                $student_id = $requestUriArray[$i + 1];
-            }
-        }
         $group_id = $this->getGroupIdByGroupName('free');
 
         $count = DB::table('students')->where('id', $student_id)->update(['group_id' => $group_id]);
@@ -385,19 +363,8 @@ class StudentsApiController extends Controller
      *
      *    )
      */
-    public function courseAdding(Request $request): Response
+    public function courseAdding(Request $request, $studentId, $courseId): Response
     {
-        $requestUri      = $request->getRequestUri();
-        $requestUriArray = explode('/', $requestUri);
-
-        for ($i = 0; $i < count($requestUriArray); $i++) {
-            if ($requestUriArray[$i] === 'students') {
-                $studentId = $requestUriArray[$i + 1];
-            }
-            if ($requestUriArray[$i] === 'courses') {
-                $courseId = $requestUriArray[$i + 1];
-            }
-        }
         $sql = DB::table('students_courses')
                  ->where('student_id', $studentId)
                  ->where('course_id', $courseId)
@@ -463,19 +430,8 @@ class StudentsApiController extends Controller
      *
      *    )
      */
-    public function courseRemove(Request $request): Response
+    public function courseRemove(Request $request, $studentId, $courseId): Response
     {
-        $requestUri      = $request->getRequestUri();
-        $requestUriArray = explode('/', $requestUri);
-
-        for ($i = 0; $i < count($requestUriArray); $i++) {
-            if ($requestUriArray[$i] === 'students') {
-                $studentId = $requestUriArray[$i + 1];
-            }
-            if ($requestUriArray[$i] === 'courses') {
-                $courseId = $requestUriArray[$i + 1];
-            }
-        }
         $sql = DB::table('students_courses')
                  ->where('student_id', (int)$studentId)
                  ->where('course_id', (int)$courseId)
